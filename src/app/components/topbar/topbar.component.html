@@ -1,0 +1,13 @@
+<div class="topbar">
+  <div class="topbar-left">
+    <h1 class="page-title">{{ pageTitle }}</h1>
+    <p class="page-subtitle">{{ pageSubtitle }}</p>
+  </div>
+  <div class="topbar-right">
+    <div class="model-status" *ngIf="showModelStatus">
+      <span class="status-dot"></span>
+      {{ selectedModeleLibelle }}
+    </div>
+    <div class="topbar-avatar">RH</div>
+  </div>
+</div>
