@@ -1,0 +1,260 @@
+/* Styles pour le bouton d'envoi et les logs */
+.btn-success {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-success:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Carte des logs */
+.logs-card {
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.logs-card .card-header {
+  background: linear-gradient(135deg, #2d3748, #1a202c);
+  color: white;
+  padding: 0.75rem 1.25rem;
+}
+
+.card-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-left i {
+  font-size: 1.2rem;
+}
+
+.header-left h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.log-count {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+}
+
+.btn-clear-logs {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-clear-logs:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.logs-body {
+  max-height: 300px;
+  overflow-y: auto;
+  background: #1e1e1e;
+  padding: 0;
+}
+
+.log-entry {
+  padding: 8px 12px;
+  border-bottom: 1px solid #2d2d2d;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s ease;
+}
+
+.log-entry:hover {
+  background: #2d2d2d;
+}
+
+.log-time {
+  color: #6c757d;
+  font-size: 11px;
+  min-width: 70px;
+}
+
+.log-message {
+  flex: 1;
+  color: #d4d4d4;
+}
+
+.log-success {
+  border-left: 3px solid #4ec9b0;
+}
+.log-success .log-message {
+  color: #4ec9b0;
+}
+
+.log-error {
+  border-left: 3px solid #f48771;
+}
+.log-error .log-message {
+  color: #f48771;
+}
+
+.log-warning {
+  border-left: 3px solid #dcdcaa;
+}
+.log-warning .log-message {
+  color: #dcdcaa;
+}
+
+.log-info {
+  border-left: 3px solid #9cdcfe;
+}
+.log-info .log-message {
+  color: #9cdcfe;
+}
+
+/* Email configuré */
+.email-configured {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #28a745;
+}
+
+.email-configured i {
+  margin-right: 4px;
+}
+
+/* Modal header personnalisé */
+.modal-header-success {
+  background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.modal-header-error {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.modal-message {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Barre de progression */
+.progress-bar-container {
+  margin: 1rem 0;
+}
+
+.progress-bar-bg {
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  height: 30px;
+}
+
+.progress-bar-fill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  transition: width 0.5s ease;
+}
+
+.progress-success {
+  background: linear-gradient(90deg, #28a745, #20c997);
+}
+
+.progress-danger {
+  background: linear-gradient(90deg, #dc3545, #c82333);
+}
+
+/* Détails des erreurs */
+.error-details {
+  margin-top: 1rem;
+  border-top: 1px solid #e9ecef;
+  padding-top: 1rem;
+}
+
+.error-details h4 {
+  font-size: 0.9rem;
+  color: #dc3545;
+  margin-bottom: 0.5rem;
+}
+
+.error-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.error-item {
+  padding: 6px 10px;
+  background: #f8d7da;
+  border-left: 3px solid #dc3545;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.error-item i {
+  color: #dc3545;
+  margin-right: 8px;
+}
+
+/* Animation pour le modal */
+.modal {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-actions {
+    flex-wrap: wrap;
+  }
+  
+  .form-actions button {
+    flex: 1;
+    min-width: calc(50% - 10px);
+  }
+  
+  .log-entry {
+    flex-wrap: wrap;
+  }
+  
+  .log-time {
+    min-width: 100%;
+  }
+}

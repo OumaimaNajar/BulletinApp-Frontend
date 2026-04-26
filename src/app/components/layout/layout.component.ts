@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { LoginService } from '../../services/login.service';
 
 @Component({
-  selector: 'app-layout',
-  standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
-  templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.css']
+    selector: 'app-layout',
+    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+    templateUrl: './layout.component.html',
+    styleUrls: ['./layout.component.css']
 })
 export class LayoutComponent implements OnInit {
   username: string = '';

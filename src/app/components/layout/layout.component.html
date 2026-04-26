@@ -24,26 +24,20 @@
           <rect x="14" y="14" width="7" height="7" rx="1"/>
           <rect x="3" y="14" width="7" height="7" rx="1"/>
         </svg>
-        Tableau de bord
+        Envoi Emails
       </a>
 
-      <a class="nav-item">
+      <a class="nav-item" routerLink="/app/generer-eml" routerLinkActive="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
         </svg>
-        Bulletins
+        Envoi Brouillons
       </a>
 
-      <a class="nav-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-        Employés
-        <span class="nav-badge">248</span>
-      </a>
+  
+
+    
 
       <span class="nav-section-label">Configuration</span>
 
@@ -54,12 +48,13 @@
         Modèles
       </a>
 
-      <a class="nav-item">
+      <!-- 🔥 Configuration - Lien corrigé -->
+      <a class="nav-item" routerLink="/app/configuration" routerLinkActive="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
         </svg>
-        Paramètres
+        Configuration
       </a>
     </nav>
 

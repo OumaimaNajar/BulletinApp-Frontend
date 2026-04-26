@@ -1587,5 +1587,193 @@
 }
 
 
+/* Ajouter dans upload.component.css */
+
+.btn--purple {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+}
+
+.btn--purple:hover:not(:disabled) {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.email-input-section {
+  background: #f8fafc;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.confirm-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.confirm-popup {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.confirm-popup h3 {
+  margin: 0 0 12px;
+  color: #1f2937;
+}
+
+.confirm-popup p {
+  margin: 0 0 20px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.confirm-popup-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* upload.component.css */
+
+.sender-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  background: #f0f0f0;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.sender-badge--gmail   { background: #fce8e8; color: #c0392b; }
+.sender-badge--outlook { background: #e8f0fe; color: #1a73e8; }
+
+.client-tag {
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.1);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.modal-hint {
+  margin-top: 12px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #666;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid #eee;
+}
+
+.success-instruction {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f0fdf4;
+  border-radius: 8px;
+  border-left: 3px solid #22c55e;
+  font-size: 14px;
+}
+
+.error-detail {
+  margin-top: 12px;
+  padding: 10px;
+  background: #fef2f2;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 13px;
+}
+
+.btn--purple {
+  background: #7c3aed;
+  color: white;
+  border: none;
+}
+.btn--purple:hover:not(:disabled) { background: #6d28d9; }
+
+
+/* Dans upload.component.css, ajoutez */
+
+.btn--orange {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.3);
+}
+
+.btn--orange:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+}
+
+.btn--orange:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ajoutez dans upload.component.css */
+
+.progress-bar-container {
+  margin: 12px 0;
+}
+
+.progress-bar-bg {
+  background: #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  height: 32px;
+}
+
+.progress-bar-fill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  transition: width 0.5s ease;
+}
+
+.progress-success {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+}
+
+.progress-danger {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+.modal-header-success {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: white;
+}
+
+.modal-header-error {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  color: white;
+}
 
 }

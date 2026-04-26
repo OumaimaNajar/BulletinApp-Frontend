@@ -8,7 +8,8 @@ import { Observable } from 'rxjs';
 export class BulletinService {
 
   // URL de base de l'API pour les bulletins
-  private apiUrl = 'http://localhost:5230/api/Bulletins';
+ //private apiUrl = 'http://localhost:5230/api/Bulletins';
+ private apiUrl = 'https://a767-197-28-130-13.ngrok-free.app/api';
 
   constructor(private http: HttpClient) {}
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { BulletinService } from '../../services/bulletin.service';
@@ -14,11 +14,10 @@ interface ZoneResult {
 }
 
 @Component({
-  selector: 'app-pdf-zone-selector',
-  standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
-  templateUrl: './pdf-zone-selector.component.html',
-  styleUrls: ['./pdf-zone-selector.component.css']
+    selector: 'app-pdf-zone-selector',
+    imports: [HttpClientModule, FormsModule],
+    templateUrl: './pdf-zone-selector.component.html',
+    styleUrls: ['./pdf-zone-selector.component.css']
 })
 export class PdfZoneSelectorComponent {
 

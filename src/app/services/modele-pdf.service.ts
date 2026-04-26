@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class ModelePdfService {
   // URL de base de l'API pour les modèles PDF
-  private apiUrl = 'http://localhost:5230/api/ModelePdf';
+  private apiUrl = 'https://a767-197-28-130-13.ngrok-free.app/api';
+ // private apiUrl = 'http://localhost:5230/api/ModelePdf';
 
   constructor(private http: HttpClient) {}
 

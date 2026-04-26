@@ -1,5 +1,5 @@
+// src/app/components/login/login.component.ts
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
@@ -7,12 +7,12 @@ import { LoginService } from '../../services/login.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  username = '';
+  email = '';
   password = '';
   loading = false;
   errorMessage = '';
@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
   successMessage = '';
   showSetup = false;
   setupUsername = '';
+  setupEmail = '';
   setupPassword = '';
   setupConfirmPassword = '';
   setupMessage = '';
@@ -31,43 +32,37 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('🔧 LoginComponent initialisé');
-    
+    // Vérifier si déjà connecté
+    if (this.loginService.isLoggedIn()) {
+      console.log('✅ Déjà connecté, redirection vers /app/upload');
+      this.router.navigate(['/app/upload']);
+      return;
+    }
+
     this.loginService.checkAdminExists().subscribe({
       next: (res) => {
-        if (!res.hasAdmin) {
+        const hasAdmin = res.hasAdmin || res.HasAdmin;
+        if (!hasAdmin) {
           this.showSetup = true;
         }
       },
-      error: (err) => {
-        console.error('❌ Erreur vérification admin:', err);
-      }
+      error: (err) => console.error('Erreur:', err)
     });
   }
 
-  private isLocalStorageAvailable(): boolean {
-    return typeof localStorage !== 'undefined';
-  }
-
-  private storeUserInfo(username: string, email: string): void {
-    if (this.isLocalStorageAvailable()) {
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('username', username);
-      localStorage.setItem('userEmail', email);
-    }
-  }
-
   onSubmit() {
-    if (!this.username || !this.password) {
-      this.errorMessage = 'Veuillez saisir votre nom d\'utilisateur et mot de passe';
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Veuillez saisir votre email et mot de passe';
       this.showErrorPopup = true;
       return;
     }
 
     this.loading = true;
+    console.log('🔐 Tentative de connexion:', { email: this.email });
 
-    this.loginService.login({ Username: this.username, Password: this.password }).subscribe({
+    this.loginService.login(this.email, this.password).subscribe({
       next: (response: any) => {
+        console.log('📡 Réponse brute:', response);
         this.loading = false;
         
         const success = response.Success || response.success;
@@ -76,23 +71,36 @@ export class LoginComponent implements OnInit {
         const email = response.Email || response.email;
         
         if (success) {
-          // Stocker les informations
-          this.storeUserInfo(username, email);
-          
-          // Afficher le toast de succès
+          this.loginService.storeUserInfo(email, username);
           this.successMessage = `Bienvenue ${username}`;
           this.showSuccessToast = true;
           
-          // Naviguer vers upload après 1.5 secondes
+          // 🔥 FORCER LA REDIRECTION VERS /app/upload
           setTimeout(() => {
-            this.router.navigate(['/app/upload']);
+            console.log('🚀 Redirection vers /app/upload...');
+            this.router.navigate(['/app/upload']).then(
+              (success) => {
+                if (success) {
+                  console.log('✅ Navigation réussie vers /app/upload');
+                } else {
+                  console.error('❌ Navigation échouée');
+                  // Fallback vers /home
+                  this.router.navigate(['/home']);
+                }
+              },
+              (error) => {
+                console.error('❌ Erreur navigation:', error);
+                this.router.navigate(['/home']);
+              }
+            );
           }, 1500);
         } else {
-          this.errorMessage = message || 'Identifiants incorrects';
+          this.errorMessage = message || 'Email ou mot de passe incorrect';
           this.showErrorPopup = true;
         }
       },
       error: (err) => {
+        console.error('❌ Erreur HTTP:', err);
         this.loading = false;
         this.errorMessage = 'Erreur de connexion au serveur';
         this.showErrorPopup = true;
@@ -100,14 +108,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  closeErrorPopup() {
-    this.showErrorPopup = false;
-    this.errorMessage = '';
-  }
-
   onSetup() {
-    if (!this.setupUsername || !this.setupPassword) {
-      this.setupMessage = 'Veuillez saisir nom d\'utilisateur et mot de passe';
+    if (!this.setupUsername || !this.setupEmail || !this.setupPassword) {
+      this.setupMessage = 'Veuillez remplir tous les champs';
       return;
     }
 
@@ -116,42 +119,39 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    if (this.setupPassword.length < 6) {
-      this.setupMessage = 'Le mot de passe doit contenir au moins 6 caractères';
-      return;
-    }
-
     this.loading = true;
-    this.setupMessage = '';
 
-    this.loginService.setupAdmin(this.setupUsername, this.setupPassword).subscribe({
+    this.loginService.setupAdmin(this.setupUsername, this.setupEmail, this.setupPassword).subscribe({
       next: (response: any) => {
         this.loading = false;
-        
         const success = response.Success || response.success;
-        const message = response.Message || response.message;
         
         if (success) {
-          this.successMessage = 'Admin créé avec succès !';
+          this.successMessage = response.Message || response.message || 'Admin créé avec succès !';
           this.showSuccessToast = true;
           setTimeout(() => {
             this.showSetup = false;
-            this.username = this.setupUsername;
+            this.email = this.setupEmail;
             this.password = this.setupPassword;
-            this.setupMessage = '';
+            // Auto-connexion après création
+            this.onSubmit();
           }, 1500);
         } else {
-          this.setupMessage = message || 'Erreur lors de la création';
+          this.setupMessage = response.Message || response.message || 'Erreur lors de la création';
         }
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
-        this.setupMessage = 'Erreur lors de la création de l\'admin';
+        this.setupMessage = 'Erreur lors de la création';
       }
     });
   }
 
   cancelSetup() {
     this.showSetup = false;
+  }
+
+  closeErrorPopup() {
+    this.showErrorPopup = false;
   }
 }

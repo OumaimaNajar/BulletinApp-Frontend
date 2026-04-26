@@ -8,13 +8,14 @@ import { TopbarComponent } from '../topbar/topbar.component';
 import { StatsRowComponent } from '../stats-row/stats-row.component';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';    
 import { LoginService } from '../../services/login.service';
+import { EmailService, EmlGenerationResult } from '../../services/email.service';
+import { ConfigurationService } from '../../services/configuration.service';
 
 @Component({
-  selector: 'app-upload',
-  standalone: true,
-  imports: [FormsModule, CommonModule],
-  templateUrl: './upload.component.html',
-  styleUrl: './upload.component.css'
+    selector: 'app-upload',
+    imports: [FormsModule, CommonModule],
+    templateUrl: './upload.component.html',
+    styleUrl: './upload.component.css'
 })
 export class UploadComponent implements OnInit {
 
@@ -33,6 +34,8 @@ export class UploadComponent implements OnInit {
   // UTILISATEUR
   username: string = '';
   userInitials: string = '';
+
+
 
 
   // Ajoutez ces variables dans la classe
@@ -64,21 +67,243 @@ export class UploadComponent implements OnInit {
   // Popup confirmation
   showConfirmPopup: boolean = false;
 
+   // Email expéditeur — récupéré automatiquement depuis le login
+  emailExpediteur: string = '';
+  typeClientDetecte: string = '';  // 'gmail' ou 'outlook'
+
+  // Email 
+showEmailInput: boolean = false;
+
+emailExpediteurEffectif: string = '';
+
+// EML
+  isGeneratingEml      = false;
+  emlGenerationResult: EmlGenerationResult | null = null;
+  showEmlResult        = false;
+  showBrouillonConfirmPopup = false;
+
+
+  
+// Variable pour l'envoi des brouillons
+isEnvoiBrouillonsEnCours = false;
+envoiBrouillonsResultat: any = null;
+
+
  constructor(
   private bulletinService: BulletinService,
   private modeleService: ModelePdfService,
   private sanitizer: DomSanitizer,
-  private loginService: LoginService
+  private emailService: EmailService,
+  private loginService: LoginService,
+  private configurationService: ConfigurationService
 ) {}
 
 // ================= INITIALISATION =================
-  ngOnInit() {
+ ngOnInit() {
+  try {
+    // Récupérer les informations depuis le service de login
     const name = this.loginService.getUsername();
+    const email = this.loginService.getEmail();
+    
+    console.log('=== DEBUG LOGIN INFO ===');
+    console.log('Username depuis service:', name);
+    console.log('Email depuis service:', email);
+    console.log('localStorage userEmail:', localStorage.getItem('userEmail'));
+    console.log('localStorage username:', localStorage.getItem('username'));
+    console.log('localStorage isLoggedIn:', localStorage.getItem('isLoggedIn'));
+    console.log('========================');
+    
+    // Définir le nom d'affichage
     this.username = name || 'Administrateur';
-    this.userInitials = this.username.includes('_')
-      ? (this.username.split('_')[0][0] + this.username.split('_')[1][0]).toUpperCase()
-      : this.username.substring(0, 2).toUpperCase();
+    
+    // Calculer les initiales pour l'avatar
+    this.calculateInitials();
+    
+    // Récupérer l'email expéditeur
+    this.emailExpediteur = email || '';
+    
+    if (this.emailExpediteur) {
+      console.log('✅ Email expéditeur chargé avec succès:', this.emailExpediteur);
+      this.detecterTypeClient();
+    } else {
+      console.warn('⚠️ Aucun email trouvé dans localStorage');
+      console.warn('⚠️ Veuillez vous reconnecter pour définir l\'email expéditeur');
+      
+      // Optionnel: afficher un message à l'utilisateur
+      this.message = '⚠️ Veuillez vous reconnecter pour définir l\'email expéditeur';
+      this.messageType = 'error';
+      setTimeout(() => this.message = '', 5000);
+    }
+    
+    // Charger les modèles
     this.loadModeles(false);
+    
+  } catch (error) {
+    console.error('❌ Erreur dans ngOnInit:', error);
+    this.username = 'Administrateur';
+    this.userInitials = 'AD';
+    this.emailExpediteur = '';
+  }
+
+
+  if (this.emailExpediteur) {
+      console.log('✅ Email expéditeur chargé avec succès:', this.emailExpediteur);
+      this.detecterTypeClient();
+      
+      // 🔥 Charger l'email configuré
+      this.loadExpediteurEffectif();
+    }
+}
+
+// Méthode pour calculer les initiales
+calculateInitials() {
+  if (this.username.includes('_')) {
+    const parts = this.username.split('_');
+    this.userInitials = (parts[0][0] + parts[1][0]).toUpperCase();
+  } else {
+    this.userInitials = this.username.substring(0, 2).toUpperCase();
+    if (this.userInitials.length < 2) {
+      this.userInitials = this.username.substring(0, 1).toUpperCase() + 'A';
+    }
+  }
+}
+
+// Méthode pour détecter le type de client
+detecterTypeClient() {
+  if (!this.emailExpediteur) return;
+  
+  const domaine = this.emailExpediteur.split('@')[1]?.toLowerCase();
+  const typeClient = (domaine === 'gmail.com' || domaine === 'googlemail.com') ? 'gmail' : 'outlook';
+  
+  this.typeClientDetecte = typeClient;
+  
+  console.log(`📧 Email chargé: ${this.emailExpediteur}`);
+  console.log(`🏷️ Domaine: ${domaine}`);
+  console.log(`💻 Type client détecté: ${this.typeClientDetecte}`);
+}
+
+loadExpediteurEffectif() {
+  // Récupérer l'email configuré depuis le backend
+  this.configurationService.getExpediteurEmail().subscribe({
+    next: (res) => {
+      if (res.email && res.email !== '') {
+        // Utiliser l'email configuré
+        this.emailExpediteurEffectif = res.email;
+        console.log('📧 Email configuré trouvé:', this.emailExpediteurEffectif);
+      } else {
+        // Utiliser l'email de l'utilisateur connecté
+        this.emailExpediteurEffectif = this.emailExpediteur;
+        console.log('📧 Aucun email configuré, utilisation email connecté:', this.emailExpediteurEffectif);
+      }
+      
+      // Mettre à jour le type client
+      this.updateTypeClientFromEmail(this.emailExpediteurEffectif);
+    },
+    error: (err) => {
+      console.error('Erreur chargement config email:', err);
+      this.emailExpediteurEffectif = this.emailExpediteur;
+      this.updateTypeClientFromEmail(this.emailExpediteurEffectif);
+    }
+  });
+}
+
+updateTypeClientFromEmail(email: string) {
+  if (!email) return;
+  const domaine = email.split('@')[1]?.toLowerCase();
+  this.typeClientDetecte = (domaine === 'gmail.com' || domaine === 'googlemail.com') ? 'gmail' : 'outlook';
+  console.log(`📧 Email effectif: ${email}, Type: ${this.typeClientDetecte}`);
+}
+
+
+
+  
+   // ← Ouvrir popup confirmation brouillon
+  openBrouillonConfirmPopup() {
+  if (!this.selectedModeleId) {
+    this.message = '❌ Veuillez sélectionner un modèle';
+    this.messageType = 'error';
+    return;
+  }
+  if (!this.excelFile) {
+    this.message = '❌ Veuillez uploader le fichier Excel';
+    this.messageType = 'error';
+    return;
+  }
+  if (!this.pdfFile) {
+    this.message = '❌ Veuillez uploader le fichier PDF';
+    this.messageType = 'error';
+    return;
+  }
+  
+  // 🔥 Charger l'email effectif avant d'ouvrir la popup
+  this.loadExpediteurEffectif();
+  
+  this.showBrouillonConfirmPopup = true;
+}
+
+  closeBrouillonConfirmPopup() {
+    this.showBrouillonConfirmPopup = false;
+  }
+
+  confirmBrouillonSend() {
+    this.showBrouillonConfirmPopup = false;
+    this.genererEtStocker();
+  }
+
+  // ← Action principale : générer EML + stocker dans brouillons
+  genererEtStocker() {
+  // Utiliser l'email effectif (configuré ou connecté)
+  const emailAUtiliser = this.emailExpediteurEffectif || this.emailExpediteur;
+  
+  if (!emailAUtiliser) {
+    this.message = '❌ Email expéditeur non disponible';
+    this.messageType = 'error';
+    return;
+  }
+
+  this.isGeneratingEml = true;
+  this.showEmlResult   = false;
+  this.message         = `⏳ Génération des bulletins en cours pour ${this.typeClientDetecte.toUpperCase()}...`;
+  this.messageType     = 'success';
+
+  this.emailService.genererEmlEtStocker(
+    this.selectedModeleId!,
+    emailAUtiliser,  // ← Utiliser l'email effectif
+    this.selectedDepartement,
+    this.selectedService
+  ).subscribe({
+      next: (res: EmlGenerationResult) => {
+        console.log('✅ Résultat génération EML:', res);
+        this.isGeneratingEml    = false;
+        this.emlGenerationResult = res;
+        this.showEmlResult      = true;
+
+        if (res.success && res.brouillonsCrees > 0) {
+          const client = res.typeClient === 'gmail' ? 'Gmail' : 'Outlook';
+          this.message     = `✅ ${res.brouillonsCrees} brouillon(s) créé(s) dans ${client} !`;
+          this.messageType = 'success';
+        } else if (res.success && res.brouillonsCrees === 0) {
+          this.message     = '⚠️ Aucun brouillon créé. Vérifiez les filtres.';
+          this.messageType = 'error';
+        } else {
+          this.message     = `❌ Erreur: ${res.error || res.message || 'Vérifiez les logs'}`;
+          this.messageType = 'error';
+        }
+
+        setTimeout(() => this.message = '', 6000);
+      },
+      error: (err) => {
+        console.error('❌ Erreur génération EML:', err);
+        this.isGeneratingEml = false;
+        this.message     = `❌ Erreur: ${err.error?.error || err.message}`;
+        this.messageType = 'error';
+        setTimeout(() => this.message = '', 5000);
+      }
+    });
+  }
+
+  closeEmlResult() {
+    this.showEmlResult = false;
   }
 
   // ================= CHARGER MODELES =================
@@ -700,6 +925,107 @@ downloadCurrentBulletin() {
       }
     });
   }
+}
+
+
+
+
+
+
+
+
+showEmailForm() {
+  this.showEmailInput = !this.showEmailInput;
+}
+
+testConfig() {
+  this.emailService.testConfiguration().subscribe({
+    next: (res) => {
+      console.log("✅ CONFIGURATION:", res);
+      let msg = `Configuration:\n`;
+      msg += `- Python installé: ${res.pythonInstalle ? '✅' : '❌'}\n`;
+      msg += `- Script Python: ${res.scriptPythonExiste ? '✅' : '❌'}\n`;
+      msg += `- Credentials.json: ${res.credentialsExiste ? '✅' : '❌'}\n`;
+      alert(msg);
+    },
+    error: (err) => {
+      alert(`Erreur test configuration: ${err.message}`);
+    }
+  });
+}
+
+/**
+ * Envoyer tous les brouillons stockés
+ */
+envoyerTousLesBrouillonsStockes(): void {
+  if (this.isEnvoiBrouillonsEnCours) {
+    return;
+  }
+
+  // Vérifier si un email est configuré
+  const emailAUtiliser = this.emailExpediteurEffectif || this.emailExpediteur;
+  if (!emailAUtiliser) {
+    this.message = '❌ Aucun email expéditeur configuré';
+    this.messageType = 'error';
+    setTimeout(() => this.message = '', 3000);
+    return;
+  }
+
+  // Confirmation avant envoi
+  const confirmMessage = `📧 Confirmation d'envoi des brouillons\n\n` +
+    `Email expéditeur: ${emailAUtiliser}\n` +
+    `Type: ${this.typeClientDetecte.toUpperCase()}\n\n` +
+    `⚠️ Cette action va envoyer TOUS les brouillons stockés dans votre boîte email.\n\n` +
+    `Êtes-vous sûr de vouloir continuer ?`;
+
+  if (!confirm(confirmMessage)) {
+    return;
+  }
+
+  this.isEnvoiBrouillonsEnCours = true;
+  this.message = `🚀 Envoi des brouillons en cours pour ${this.typeClientDetecte.toUpperCase()}...`;
+  this.messageType = 'success';
+
+  this.emailService.envoyerTousLesBrouillons().subscribe({
+    next: (resultat) => {
+      console.log('✅ Résultat envoi brouillons:', resultat);
+      this.isEnvoiBrouillonsEnCours = false;
+      this.envoiBrouillonsResultat = resultat;
+
+      if (resultat.success) {
+        this.message = `✅ ${resultat.message} (${resultat.envoyes} envoyés, ${resultat.echecs} échecs)`;
+        this.messageType = 'success';
+      } else {
+        this.message = `❌ ${resultat.message}`;
+        this.messageType = 'error';
+      }
+
+      // Afficher le modal de résultat
+      setTimeout(() => this.message = '', 5000);
+      
+      // Optionnel: ouvrir un modal avec les détails
+      this.openEnvoiResultModal();
+    },
+    error: (error) => {
+      console.error('❌ Erreur envoi brouillons:', error);
+      this.isEnvoiBrouillonsEnCours = false;
+      this.message = `❌ Erreur: ${error.error?.message || error.message}`;
+      this.messageType = 'error';
+      setTimeout(() => this.message = '', 5000);
+    }
+  });
+}
+
+// Variable pour le modal des résultats
+showEnvoiResultModal = false;
+
+openEnvoiResultModal() {
+  this.showEnvoiResultModal = true;
+}
+
+closeEnvoiResultModal() {
+  this.showEnvoiResultModal = false;
+  this.envoiBrouillonsResultat = null;
 }
 
 

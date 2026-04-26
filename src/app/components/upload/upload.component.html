@@ -4,10 +4,10 @@
     <h1 class="page-title">Gestion des bulletins</h1>
     <p class="page-subtitle">Import, détection automatique et envoi par email</p>
   </div>
- 
-    <!-- Avatar dynamique -->
-    <div class="topbar-avatar" [title]="username">{{ userInitials }}</div>
-  </div>
+
+  <!-- Avatar dynamique -->
+  <div class="topbar-avatar" [title]="username">{{ userInitials }}</div>
+</div>
 
 
 
@@ -74,7 +74,9 @@
           [(ngModel)]="selectedModeleId"
           (change)="onModeleChange($event)">
           <option value="">-- Choisir un modèle --</option>
-          <option *ngFor="let m of modeles" [value]="m.id">{{ m.libelle }}</option>
+          @for (m of modeles; track m) {
+            <option [value]="m.id">{{ m.libelle }}</option>
+          }
         </select>
       </div>
 
@@ -91,13 +93,17 @@
               <line x1="16" y1="17" x2="8" y2="17"/>
             </svg>
           </div>
-          <span class="file-drop-text" *ngIf="!excelName">Cliquer ou glisser le fichier</span>
-          <span class="file-drop-name" *ngIf="excelName">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            {{ excelName }}
-          </span>
+          @if (!excelName) {
+            <span class="file-drop-text">Cliquer ou glisser le fichier</span>
+          }
+          @if (excelName) {
+            <span class="file-drop-name">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              {{ excelName }}
+            </span>
+          }
           <span class="file-drop-hint">.xlsx uniquement</span>
         </div>
       </div>
@@ -113,13 +119,17 @@
               <polyline points="14 2 14 8 20 8"/>
             </svg>
           </div>
-          <span class="file-drop-text" *ngIf="!pdfName">Cliquer ou glisser le fichier</span>
-          <span class="file-drop-name" *ngIf="pdfName">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
-            {{ pdfName }}
-          </span>
+          @if (!pdfName) {
+            <span class="file-drop-text">Cliquer ou glisser le fichier</span>
+          }
+          @if (pdfName) {
+            <span class="file-drop-name">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              {{ pdfName }}
+            </span>
+          }
           <span class="file-drop-hint">.pdf uniquement</span>
         </div>
       </div>
@@ -141,56 +151,69 @@
 </div>
 
 <!-- ÉTAPE 2 : FILTRES -->
-<div class="card" *ngIf="showFilters">
-  <div class="card-header">
-    <div class="card-title">
-      <span class="step-badge">2</span>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-      </svg>
-      Filtrer les destinataires
-    </div>
-    <span class="step-label">Étape 2 sur 3</span>
-  </div>
-  <div class="card-body">
-    <div class="filter-grid">
-      <div class="field">
-        <label class="field-label">Département</label>
-        <select class="field-select" [(ngModel)]="selectedDepartement" (change)="onDepartementChange()">
-          <option value="">Tous les départements</option>
-          <option *ngFor="let d of departements" [value]="d.nom">{{ d.nom }} ({{ d.count }})</option>
-        </select>
-      </div>
-      <div class="field">
-        <label class="field-label">Service</label>
-        <select class="field-select" [(ngModel)]="selectedService"
-          [disabled]="!selectedDepartement && services.length === 0">
-          <option value="">Tous les services</option>
-          <option *ngFor="let s of services" [value]="s.nom">{{ s.nom }} ({{ s.count }})</option>
-        </select>
-      </div>
-      <button
-        class="btn btn--outline btn--sm"
-        (click)="resetFilters()"
-        *ngIf="selectedDepartement || selectedService">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="1 4 1 10 7 10"/>
-          <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+@if (showFilters) {
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <span class="step-badge">2</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
         </svg>
-        Réinitialiser
-      </button>
+        Filtrer les destinataires
+      </div>
+      <span class="step-label">Étape 2 sur 3</span>
     </div>
-
-    <div class="active-filters" *ngIf="selectedDepartement || selectedService">
-      <span class="filter-tag filter-tag--dept" *ngIf="selectedDepartement">
-        {{ selectedDepartement }}
-      </span>
-      <span class="filter-tag filter-tag--svc" *ngIf="selectedService">
-        {{ selectedService }}
-      </span>
+    <div class="card-body">
+      <div class="filter-grid">
+        <div class="field">
+          <label class="field-label">Département</label>
+          <select class="field-select" [(ngModel)]="selectedDepartement" (change)="onDepartementChange()">
+            <option value="">Tous les départements</option>
+            @for (d of departements; track d) {
+              <option [value]="d.nom">{{ d.nom }} ({{ d.count }})</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">Service</label>
+          <select class="field-select" [(ngModel)]="selectedService"
+            [disabled]="!selectedDepartement && services.length === 0">
+            <option value="">Tous les services</option>
+            @for (s of services; track s) {
+              <option [value]="s.nom">{{ s.nom }} ({{ s.count }})</option>
+            }
+          </select>
+        </div>
+        @if (selectedDepartement || selectedService) {
+          <button
+            class="btn btn--outline btn--sm"
+            (click)="resetFilters()"
+            >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"/>
+              <path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+            </svg>
+            Réinitialiser
+          </button>
+        }
+      </div>
+      @if (selectedDepartement || selectedService) {
+        <div class="active-filters">
+          @if (selectedDepartement) {
+            <span class="filter-tag filter-tag--dept">
+              {{ selectedDepartement }}
+            </span>
+          }
+          @if (selectedService) {
+            <span class="filter-tag filter-tag--svc">
+              {{ selectedService }}
+            </span>
+          }
+        </div>
+      }
     </div>
   </div>
-</div>
+}
 
 <!-- ÉTAPE 3 : ENVOI -->
 <div class="card">
@@ -206,17 +229,56 @@
     <span class="step-label">Étape 3 sur 3</span>
   </div>
   <div class="card-body">
-    <div class="send-summary" *ngIf="excelFile && pdfFile && selectedModeleId">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-      Prêt à envoyer —
-      <strong *ngIf="selectedDepartement">{{ selectedDepartement }}</strong>
-      <span *ngIf="selectedDepartement && selectedService"> / </span>
-      <strong *ngIf="selectedService">{{ selectedService }}</strong>
-      <strong *ngIf="!selectedDepartement && !selectedService">tous les employés</strong>
-    </div>
-    <div class="card-actions">
+
+    <!-- EMAIL EXPÉDITEUR DÉTECTÉ -->
+    @if (emailExpediteur) {
+      <div style="margin-bottom: 16px;">
+        <label class="field-label">Email expéditeur détecté</label>
+        <div class="sender-badge"
+          [class.sender-badge--gmail]="typeClientDetecte === 'gmail'"
+          [class.sender-badge--outlook]="typeClientDetecte === 'outlook'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+            <path d="M4 4h16v16H4z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <span>{{ emailExpediteur }}</span>
+          <span class="client-tag">{{ typeClientDetecte | uppercase }}</span>
+        </div>
+      </div>
+    }
+
+    @if (!emailExpediteur) {
+      <div style="padding: 10px; background: #fef3c7; border-radius: 6px; margin-bottom: 16px; font-size: 13px; color: #92400e;">
+        ⚠️ Email non détecté. Veuillez vous reconnecter.
+      </div>
+    }
+
+    <!-- RÉSUMÉ FILTRES -->
+    @if (excelFile && pdfFile && selectedModeleId) {
+      <div class="send-summary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Prêt à envoyer —
+        @if (selectedDepartement) {
+          <strong>{{ selectedDepartement }}</strong>
+        }
+        @if (selectedDepartement && selectedService) {
+          <span> / </span>
+        }
+        @if (selectedService) {
+          <strong>{{ selectedService }}</strong>
+        }
+        @if (!selectedDepartement && !selectedService) {
+          <strong>tous les employés</strong>
+        }
+      </div>
+    }
+
+    <!-- BOUTONS -->
+    <div class="card-actions" style="flex-wrap: wrap; gap: 10px;">
+
+      <!-- Envoyer par email direct -->
       <button
         class="btn btn--green"
         (click)="onSendClick()"
@@ -225,191 +287,438 @@
           <line x1="22" y1="2" x2="11" y2="13"/>
           <polygon points="22 2 15 22 11 13 2 9 22 2"/>
         </svg>
-        Envoyer les bulletins
+        Envoyer par email
       </button>
-      <button class="btn btn--outline" (click)="preview()" [disabled]="loading">
+
+      <!-- Envoyer au brouillon -->
+      <button
+        class="btn btn--purple"
+        (click)="openBrouillonConfirmPopup()"
+        [disabled]="isGeneratingEml || !selectedModeleId || !excelFile || !pdfFile">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16v16H4z"/>
+          <line x1="8" y1="8" x2="16" y2="8"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+          <line x1="8" y1="16" x2="12" y2="16"/>
+        </svg>
+        {{ isGeneratingEml ? 'Génération en cours...' : 'Envoyer au brouillon' }}
+      </button>
+
+      <!-- NOUVEAU BOUTON : Envoyer les brouillons stockés -->
+<button
+  class="btn btn--orange"
+  (click)="envoyerTousLesBrouillonsStockes()"
+  [disabled]="isEnvoiBrouillonsEnCours">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+    <line x1="10" y1="14" x2="22" y2="2"/>
+  </svg>
+  {{ isEnvoiBrouillonsEnCours ? 'Envoi en cours...' : 'Envoyer les brouillons' }}
+</button>
+
+      <!-- Aperçu -->
+      <button
+        class="btn btn--outline"
+        (click)="preview()"
+        [disabled]="loading || !selectedModeleId || !pdfFile">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
           <circle cx="12" cy="12" r="3"/>
         </svg>
         Aperçu
       </button>
+
+      <!-- Tester config -->
+      <button
+        class="btn btn--outline"
+        (click)="testConfig()"
+        [disabled]="isGeneratingEml"
+        title="Tester configuration Python">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Tester config
+      </button>
+
     </div>
   </div>
 </div>
+
+<!-- POPUP CONFIRMATION BROUILLON -->
+@if (showBrouillonConfirmPopup) {
+  <div class="modal-backdrop" (click)="closeBrouillonConfirmPopup()">
+    <div class="modal modal--sm" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmer l'envoi au brouillon</h3>
+        <button class="modal-close" (click)="closeBrouillonConfirmPopup()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 16px;">
+          Les bulletins seront stockés dans les brouillons de :
+        </p>
+        <!-- 🔥 Afficher l'email effectif (configuré ou connecté) -->
+        <div class="sender-badge"
+          [class.sender-badge--gmail]="typeClientDetecte === 'gmail'"
+          [class.sender-badge--outlook]="typeClientDetecte === 'outlook'"
+          style="margin-bottom: 12px;">
+          <strong>{{ emailExpediteurEffectif || emailExpediteur }}</strong>
+          <span class="client-tag">{{ typeClientDetecte | uppercase }}</span>
+        </div>
+        
+        <!-- Message d'info si un email configuré est utilisé -->
+        @if (emailExpediteurEffectif && emailExpediteurEffectif !== emailExpediteur) {
+          <p class="modal-hint" style="font-size: 12px; color: #666; margin-bottom: 12px;">
+            ℹ️ Email configuré (différent de votre compte de connexion)
+          </p>
+        }
+        
+        @if (typeClientDetecte === 'gmail') {
+          <p class="modal-hint">
+            ℹ️ Brouillons créés dans Gmail → Ouvrez Gmail → Brouillons pour envoyer.
+          </p>
+        }
+        @if (typeClientDetecte === 'outlook') {
+          <p class="modal-hint">
+            ℹ️ Brouillons créés dans Outlook → Ouvrez Outlook → Brouillons pour envoyer.
+          </p>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--outline" (click)="closeBrouillonConfirmPopup()">Annuler</button>
+        <button class="btn btn--purple" (click)="confirmBrouillonSend()">Confirmer</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL RÉSULTAT EML -->
+@if (showEmlResult && emlGenerationResult) {
+  <div class="modal-backdrop" (click)="closeEmlResult()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          {{ emlGenerationResult.success ? '✅ Brouillons créés' : '❌ Erreur' }}
+        </h3>
+        <button class="modal-close" (click)="closeEmlResult()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-stats">
+          <div class="modal-stat modal-stat--success">
+            <span class="modal-stat-value">{{ emlGenerationResult.brouillonsCrees }}</span>
+            <span class="modal-stat-label">Brouillons créés</span>
+          </div>
+          <div class="modal-stat">
+            <span class="modal-stat-value">{{ emlGenerationResult.typeClient | uppercase }}</span>
+            <span class="modal-stat-label">Client email</span>
+          </div>
+        </div>
+        @if (emlGenerationResult.success) {
+          <div class="success-instruction">
+            @if (emlGenerationResult.typeClient === 'gmail') {
+              <p>📧 Ouvrez <strong>Gmail</strong> → <strong>Brouillons</strong> → Sélectionnez tout → Envoyer</p>
+            } @else {
+              <p>📧 Ouvrez <strong>Outlook</strong> → <strong>Brouillons</strong> → Sélectionnez tout → Envoyer</p>
+            }
+          </div>
+        }
+        @if (emlGenerationResult.error) {
+          <div class="error-detail">
+            <p>{{ emlGenerationResult.error }}</p>
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--outline" (click)="closeEmlResult()">Fermer</button>
+      </div>
+    </div>
+  </div>
+}
 
 <!-- TOAST -->
-<div class="toast" *ngIf="message" [ngClass]="'toast--' + messageType">
-  <svg *ngIf="messageType === 'success'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15">
-    <polyline points="20 6 9 17 4 12"/>
-  </svg>
-  <svg *ngIf="messageType === 'error'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
-    <circle cx="12" cy="12" r="10"/>
-    <line x1="12" y1="8" x2="12" y2="12"/>
-    <line x1="12" y1="16" x2="12.01" y2="16"/>
-  </svg>
-  {{ message }}
-</div>
+@if (message) {
+  <div class="toast" [ngClass]="'toast--' + messageType">
+    @if (messageType === 'success') {
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    }
+    @if (messageType === 'error') {
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+    }
+    {{ message }}
+  </div>
+}
 
 <!-- LOADING OVERLAY -->
-<div class="loading-overlay" *ngIf="loading">
-  <div class="spinner"></div>
-  <p class="loading-text">Traitement en cours...</p>
-</div>
+@if (loading) {
+  <div class="loading-overlay">
+    <div class="spinner"></div>
+    <p class="loading-text">Traitement en cours...</p>
+  </div>
+}
 
 <!-- MODAL: RÉSULTATS OPÉRATION -->
-<div class="modal-backdrop" *ngIf="showDetectionResults" (click)="closeDetectionResults()">
-  <div class="modal" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3 class="modal-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-        </svg>
-        Résultats de l'opération
-      </h3>
-      <button class="modal-close" (click)="closeDetectionResults()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-stats">
-        <div class="modal-stat">
-          <span class="modal-stat-value">{{ detectionResults?.total || 0 }}</span>
-          <span class="modal-stat-label">Total</span>
-        </div>
-        <div class="modal-stat modal-stat--success">
-          <span class="modal-stat-value">{{ detectionResults?.success || 0 }}</span>
-          <span class="modal-stat-label">Succès</span>
-        </div>
-        <div class="modal-stat modal-stat--error">
-          <span class="modal-stat-value">{{ detectionResults?.failed || 0 }}</span>
-          <span class="modal-stat-label">Échecs</span>
-        </div>
-      </div>
-      <h4 class="modal-section-title">Détails par employé</h4>
-      <div class="detail-list">
-        <div *ngFor="let detail of detectionResults?.details" class="detail-row">
-          <div class="detail-info">
-            <span class="detail-name">{{ detail.nom }} {{ detail.prenom }}</span>
-            <span class="detail-badge detail-badge--dept">{{ detail.departement }}</span>
-            <span class="detail-badge detail-badge--svc">{{ detail.service }}</span>
-          </div>
-          <span
-            class="detail-status"
-            [class.detail-status--ok]="detail.status === 'sent'"
-            [class.detail-status--err]="detail.status !== 'sent'">
-            {{ detail.status === 'sent' ? '✓ Envoyé' : (detail.status === 'failed' ? '✗ Échec' : '⚠ ' + detail.reason) }}
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: LISTE EMPLOYÉS -->
-<div class="modal-backdrop" *ngIf="showUsersPopup" (click)="closeUsersPopup()">
-  <div class="modal modal--wide" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3 class="modal-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-        Liste des employés
-      </h3>
-      <button class="modal-close" (click)="closeUsersPopup()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </div>
-    <div class="modal-body">
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Matricule</th>
-              <th>Nom</th>
-              <th>Prénom</th>
-              <th>Département</th>
-              <th>Service</th>
-              <th>Email</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of paginatedUsers">
-              <td><span class="matricule-badge">{{ user.matricule }}</span></td>
-              <td>{{ user.nom }}</td>
-              <td>{{ user.prenom }}</td>
-              <td>{{ user.departement }}</td>
-              <td>{{ user.service }}</td>
-              <td><a class="email-link" href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="pagination">
-        <button class="btn btn--outline btn--sm" (click)="prevPage()" [disabled]="currentPage === 1">
-          Précédent
-        </button>
-        <span class="page-info">Page {{ currentPage }}</span>
-        <button class="btn btn--outline btn--sm" (click)="nextPage()"
-          [disabled]="currentPage * pageSize >= users.length">
-          Suivant
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL APERÇU PDF -->
-<div class="preview-overlay" *ngIf="showPreviewModal" (click)="closePreviewModal()">
-  <div class="preview-container" (click)="$event.stopPropagation()">
-    <div class="preview-header">
-      <div class="preview-title">
-        <div class="preview-icon">📄</div>
-        <div>
-          <h3>Aperçu du bulletin de paie</h3>
-          <p>{{ previewEmployePrenom }} {{ previewEmployeNom }} ({{ previewEmployeMatricule }})</p>
-        </div>
-      </div>
-      <div class="preview-actions">
-        <button class="preview-btn preview-btn--download" (click)="downloadCurrentBulletin()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+@if (showDetectionResults) {
+  <div class="modal-backdrop" (click)="closeDetectionResults()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
           </svg>
-        </button>
-        <button class="preview-btn preview-btn--send" (click)="sendCurrentBulletin()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
-            <line x1="22" y1="2" x2="11" y2="13"/>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-          </svg>
-        </button>
-        <button class="preview-btn preview-btn--close" (click)="closePreviewModal()">
+          Résultats de l'opération
+        </h3>
+        <button class="modal-close" (click)="closeDetectionResults()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
             <line x1="18" y1="6" x2="6" y2="18"/>
             <line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         </button>
       </div>
-    </div>
-    <div class="preview-body">
-      <div class="pdf-wrapper" *ngIf="previewPdfUrl">
-        <iframe [src]="previewPdfUrl" class="pdf-iframe"></iframe>
+      <div class="modal-body">
+        <div class="modal-stats">
+          <div class="modal-stat">
+            <span class="modal-stat-value">{{ detectionResults?.total || 0 }}</span>
+            <span class="modal-stat-label">Total</span>
+          </div>
+          <div class="modal-stat modal-stat--success">
+            <span class="modal-stat-value">{{ detectionResults?.success || 0 }}</span>
+            <span class="modal-stat-label">Succès</span>
+          </div>
+          <div class="modal-stat modal-stat--error">
+            <span class="modal-stat-value">{{ detectionResults?.failed || 0 }}</span>
+            <span class="modal-stat-label">Échecs</span>
+          </div>
+        </div>
+        <h4 class="modal-section-title">Détails par employé</h4>
+        <div class="detail-list">
+          @for (detail of detectionResults?.details; track detail) {
+            <div class="detail-row">
+              <div class="detail-info">
+                <span class="detail-name">{{ detail.nom }} {{ detail.prenom }}</span>
+                <span class="detail-badge detail-badge--dept">{{ detail.departement }}</span>
+                <span class="detail-badge detail-badge--svc">{{ detail.service }}</span>
+              </div>
+              <span
+                class="detail-status"
+                [class.detail-status--ok]="detail.status === 'sent'"
+                [class.detail-status--err]="detail.status !== 'sent'">
+                {{ detail.status === 'sent' ? '✓ Envoyé' : (detail.status === 'failed' ? '✗ Échec' : '⚠ ' + detail.reason) }}
+              </span>
+            </div>
+          }
+        </div>
       </div>
-      <div class="pdf-loading" *ngIf="!previewPdfUrl">
-        <div class="spinner"></div>
-        <p>Chargement du bulletin...</p>
-      </div>
-    </div>
-    <div class="preview-footer">
-      <span class="preview-info">Document protégé par mot de passe</span>
-      <button class="preview-footer-btn" (click)="closePreviewModal()">Fermer</button>
     </div>
   </div>
-</div>
+}
+
+
+<!-- MODAL RÉSULTAT ENVOI BROUILLONS -->
+@if (showEnvoiResultModal && envoiBrouillonsResultat) {
+  <div class="modal-backdrop" (click)="closeEnvoiResultModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header" [class]="envoiBrouillonsResultat.success ? 'modal-header-success' : 'modal-header-error'">
+        <h3 class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          {{ envoiBrouillonsResultat.success ? '✅ Envoi réussi' : '❌ Échec de l\'envoi' }}
+        </h3>
+        <button class="modal-close" (click)="closeEnvoiResultModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 16px;">{{ envoiBrouillonsResultat.message }}</p>
+        
+        <!-- Statistiques -->
+        <div class="modal-stats">
+          <div class="modal-stat">
+            <span class="modal-stat-value">{{ envoiBrouillonsResultat.total || 0 }}</span>
+            <span class="modal-stat-label">Total brouillons</span>
+          </div>
+          <div class="modal-stat modal-stat--success">
+            <span class="modal-stat-value">{{ envoiBrouillonsResultat.envoyes || 0 }}</span>
+            <span class="modal-stat-label">Envoyés</span>
+          </div>
+          <div class="modal-stat" [class.modal-stat--error]="(envoiBrouillonsResultat.echecs || 0) > 0">
+            <span class="modal-stat-value">{{ envoiBrouillonsResultat.echecs || 0 }}</span>
+            <span class="modal-stat-label">Échecs</span>
+          </div>
+        </div>
+
+        <!-- Barre de progression -->
+        @if (envoiBrouillonsResultat.total > 0) {
+          <div class="progress-bar-container" style="margin-bottom: 16px;">
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill progress-success" 
+                   [style.width.%]="((envoiBrouillonsResultat.envoyes || 0) / envoiBrouillonsResultat.total) * 100">
+                {{ envoiBrouillonsResultat.envoyes }}
+              </div>
+              @if ((envoiBrouillonsResultat.echecs || 0) > 0) {
+                <div class="progress-bar-fill progress-danger" 
+                     [style.width.%]="((envoiBrouillonsResultat.echecs || 0) / envoiBrouillonsResultat.total) * 100">
+                  {{ envoiBrouillonsResultat.echecs }}
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Détails des erreurs -->
+        @if (envoiBrouillonsResultat.erreurs && envoiBrouillonsResultat.erreurs.length > 0) {
+          <div style="margin-top: 16px;">
+            <h4 style="font-size: 13px; color: #dc2626; margin-bottom: 8px;">
+              ⚠️ Détails des erreurs ({{ envoiBrouillonsResultat.erreurs.length }})
+            </h4>
+            <div style="max-height: 200px; overflow-y: auto;">
+              @for (erreur of envoiBrouillonsResultat.erreurs; track erreur) {
+                <div style="padding: 8px; background: #fef2f2; border-left: 3px solid #dc2626; margin-bottom: 5px; border-radius: 4px; font-size: 12px;">
+                  <strong>{{ erreur.email }}:</strong> {{ erreur.raison }}
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Instructions -->
+        @if (envoiBrouillonsResultat.success && envoiBrouillonsResultat.envoyes > 0) {
+          <div class="success-instruction" style="margin-top: 16px;">
+            <strong>✓ Envoi terminé !</strong> Tous les brouillons ont été traités.
+          </div>
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn--outline" (click)="closeEnvoiResultModal()">Fermer</button>
+        @if (envoiBrouillonsResultat.echecs > 0) {
+          <button class="btn btn--orange" (click)="envoyerTousLesBrouillonsStockes(); closeEnvoiResultModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            Réessayer
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL: LISTE EMPLOYÉS -->
+@if (showUsersPopup) {
+  <div class="modal-backdrop" (click)="closeUsersPopup()">
+    <div class="modal modal--wide" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+          Liste des employés
+        </h3>
+        <button class="modal-close" (click)="closeUsersPopup()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Département</th>
+                <th>Service</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of paginatedUsers; track user) {
+                <tr>
+                  <td><span class="matricule-badge">{{ user.matricule }}</span></td>
+                  <td>{{ user.nom }}</td>
+                  <td>{{ user.prenom }}</td>
+                  <td>{{ user.departement }}</td>
+                  <td>{{ user.service }}</td>
+                  <td><a class="email-link" href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <button class="btn btn--outline btn--sm" (click)="prevPage()" [disabled]="currentPage === 1">
+            Précédent
+          </button>
+          <span class="page-info">Page {{ currentPage }}</span>
+          <button class="btn btn--outline btn--sm" (click)="nextPage()"
+            [disabled]="currentPage * pageSize >= users.length">
+            Suivant
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- MODAL APERÇU PDF -->
+@if (showPreviewModal) {
+  <div class="preview-overlay" (click)="closePreviewModal()">
+    <div class="preview-container" (click)="$event.stopPropagation()">
+      <div class="preview-header">
+        <div class="preview-title">
+          <div class="preview-icon">📄</div>
+          <div>
+            <h3>Aperçu du bulletin de paie</h3>
+            <p>{{ previewEmployePrenom }} {{ previewEmployeNom }} ({{ previewEmployeMatricule }})</p>
+          </div>
+        </div>
+        <div class="preview-actions">
+          <button class="preview-btn preview-btn--download" (click)="downloadCurrentBulletin()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+          </button>
+          <button class="preview-btn preview-btn--send" (click)="sendCurrentBulletin()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+          <button class="preview-btn preview-btn--close" (click)="closePreviewModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="preview-body">
+        @if (previewPdfUrl) {
+          <div class="pdf-wrapper">
+            <iframe [src]="previewPdfUrl" class="pdf-iframe"></iframe>
+          </div>
+        }
+        @if (!previewPdfUrl) {
+          <div class="pdf-loading">
+            <div class="spinner"></div>
+            <p>Chargement du bulletin...</p>
+          </div>
+        }
+      </div>
+      <div class="preview-footer">
+        <span class="preview-info">Document protégé par mot de passe</span>
+        <button class="preview-footer-btn" (click)="closePreviewModal()">Fermer</button>
+      </div>
+    </div>
+  </div>
+}

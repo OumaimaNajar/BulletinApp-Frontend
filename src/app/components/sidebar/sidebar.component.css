@@ -1,0 +1,23 @@
+/* Forcer l'affichage */
+.sidebar {
+  display: flex !important;
+  width: 260px !important;
+  background: #0a1628 !important;
+}
+
+.nav-item {
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 16px !important;
+  color: rgba(255,255,255,0.7) !important;
+}
+
+.nav-item.active {
+  background: rgba(59,130,246,0.2) !important;
+  color: white !important;
+}
+
+.sidebar-footer {
+  margin-top: auto !important;
+  padding: 16px !important;
+}

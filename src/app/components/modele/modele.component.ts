@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModelePdfService } from '../../services/modele-pdf.service';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { BulletinService } from '../../services/bulletin.service';
@@ -11,11 +11,10 @@ import { StatsRowComponent } from '../stats-row/stats-row.component';
 import { LoginService } from '../../services/login.service';
 
 @Component({
-  selector: 'app-modele',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, RouterModule , SidebarComponent, TopbarComponent, StatsRowComponent],
-  templateUrl: './modele.component.html',
-  styleUrl: './modele.component.css'
+    selector: 'app-modele',
+    imports: [FormsModule, RouterLink, RouterLinkActive, RouterModule, SidebarComponent, TopbarComponent, StatsRowComponent],
+    templateUrl: './modele.component.html',
+    styleUrl: './modele.component.css'
 })
 export class ModeleComponent implements OnInit {
 

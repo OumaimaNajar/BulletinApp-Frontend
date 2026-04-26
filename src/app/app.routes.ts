@@ -5,6 +5,9 @@ import { ModeleComponent } from './components/modele/modele.component';
 import { LoginComponent } from './components/login/login.component';
 import { HomeComponent } from './components/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
+import { GenererEmlComponent } from './components/generer-eml/generer-eml.component';
+import { ConfigurationComponent } from './components/configuration/configuration.component';
+
 
 export const routes: Routes = [
   // Redirection racine → home
@@ -13,6 +16,7 @@ export const routes: Routes = [
   // Pages publiques
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
+  
 
   // Pages protégées avec sidebar
   {
@@ -23,6 +27,10 @@ export const routes: Routes = [
       { path: '', redirectTo: 'upload', pathMatch: 'full' },
       { path: 'upload', component: UploadComponent },
       { path: 'modele', component: ModeleComponent },
+       { path: 'generer-eml', component: GenererEmlComponent },
+       { path: 'configuration', component: ConfigurationComponent },
+        { path: 'envoi-brouillons', component: GenererEmlComponent },
+   
     ]
   },
 
