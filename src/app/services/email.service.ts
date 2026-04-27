@@ -1,8 +1,9 @@
 // src/app/services/email.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams , HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { NGROK_HEADERS } from './http-options';
 
 export interface ModelePdf {
   id: number;
@@ -62,9 +63,9 @@ export interface EnvoiResultat {
 })
 export class EmailService {
   //private apiUrl        = 'http://localhost:5230/api';
-  private apiUrl = 'https://a767-197-28-130-13.ngrok-free.app/api';
-  private bulletinsUrl  = 'http://localhost:5230/api/Bulletins';
-  private modeleUrl     = 'http://localhost:5230/api/ModelePdf';
+  private apiUrl = 'https://401a-197-28-128-214.ngrok-free.app/api';
+  private bulletinsUrl  = 'https://401a-197-28-128-214.ngrok-free.app/api/Bulletins';
+  private modeleUrl     = 'https://401a-197-28-128-214.ngrok-free.app/api/ModelePdf';
   
 
   
@@ -72,24 +73,24 @@ export class EmailService {
   constructor(private http: HttpClient) {}
 
   getModeles(): Observable<ModelePdf[]> {
-    return this.http.get<ModelePdf[]>(this.modeleUrl);
+    return this.http.get<ModelePdf[]>(this.modeleUrl, { headers: NGROK_HEADERS });
   }
 
   getDepartements(): Observable<SelectOption[]> {
-    return this.http.get<SelectOption[]>(`${this.bulletinsUrl}/departements`);
+    return this.http.get<SelectOption[]>(`${this.bulletinsUrl}/departements`, { headers: NGROK_HEADERS });
   }
 
   getServices(departement?: string): Observable<SelectOption[]> {
     let params = new HttpParams();
     if (departement) params = params.set('departement', departement);
-    return this.http.get<SelectOption[]>(`${this.bulletinsUrl}/services`, { params });
+    return this.http.get<SelectOption[]>(`${this.bulletinsUrl}/services`, { params, headers: NGROK_HEADERS });
   }
 
   preview(modeleId: number, departement?: string, service?: string): Observable<PreviewResult> {
     const body: any = { modeleId: Number(modeleId) };
     if (departement) body.departement = departement;
     if (service)     body.service     = service;
-    return this.http.post<PreviewResult>(`${this.bulletinsUrl}/preview`, body);
+    return this.http.post<PreviewResult>(`${this.bulletinsUrl}/preview`, body, { headers: NGROK_HEADERS });
   }
 
   // ✅ CORRECTION: Endpoint correct pour la génération EML
@@ -111,19 +112,22 @@ export class EmailService {
     // 🔥 CORRECTION : Utiliser le bon endpoint
     return this.http.post<EmlGenerationResult>(
       `${this.apiUrl}/Eml/generer-eml-et-stocker`,  // ← Changé de Brouillon à Eml
-      body
+      body,
+      { headers: NGROK_HEADERS }
     );
   }
 
   testConfiguration(): Observable<TestConfigurationResult> {
     return this.http.get<TestConfigurationResult>(
-      `${this.apiUrl}/Brouillon/test-configuration`
+      `${this.apiUrl}/Brouillon/test-configuration`,
+      { headers: NGROK_HEADERS }
     );
   }
 
   detecterTypeClient(email: string): Observable<{ typeClient: string; message: string }> {
     return this.http.get<any>(
-      `${this.apiUrl}/Eml/detecter-client?email=${encodeURIComponent(email)}`
+      `${this.apiUrl}/Eml/detecter-client?email=${encodeURIComponent(email)}`,
+      { headers: NGROK_HEADERS }
     );
   }
 
@@ -146,8 +150,8 @@ export class EmailService {
     const url = operationId 
       ? `${this.apiUrl}/Envoi/statut/${operationId}`
       : `${this.apiUrl}/Envoi/statut`;
-    return this.http.get<any>(url);
+    return this.http.get<any>(url, { headers: NGROK_HEADERS });
   }
 
-
+ 
 }

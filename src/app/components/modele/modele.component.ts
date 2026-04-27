@@ -350,7 +350,7 @@ editModele(modele: any) {
   this.libelle = modele.libelle ?? modele.Libelle ?? '';
 
   // 🔥 Récupérer le modèle avec la zone parsée
-  const url = `http://localhost:5230/api/ModelePdf/with-zone/${id}`;
+  const url = `https://401a-197-28-128-214.ngrok-free.app/api/ModelePdf/with-zone/${id}`;
   console.log("📡 URL appelée:", url);
   
   fetch(url) // Utiliser fetch pour un contrôle total sur la réponse
@@ -406,7 +406,7 @@ editModele(modele: any) {
     });
 
   // Charger le PDF pour l'affichage et le dessin de la zone 
-  const pdfUrl = `http://localhost:5230/api/ModelePdf/file/${id}`;
+  const pdfUrl = `https://401a-197-28-128-214.ngrok-free.app/api/ModelePdf/file/${id}`;
   console.log("📡 PDF URL:", pdfUrl);
   this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(pdfUrl + '#toolbar=0');
   

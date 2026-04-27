@@ -795,7 +795,7 @@ preview() {
       }
 
       // 🔥 Ouvrir dans un nouvel onglet pour VISUALISER (pas télécharger)
-      const url = `http://localhost:5230/api/Bulletins/view/${this.selectedModeleId}/${employe.matricule}`;
+      const url = `https://9a94-197-28-128-214.ngrok-free.app/api/Bulletins/view/${this.selectedModeleId}/${employe.matricule}`;
       window.open(url, '_blank');
       // Afficher un message de succès avec le nom de l'employé dont le bulletin est prévisualisé
       this.loading = false;

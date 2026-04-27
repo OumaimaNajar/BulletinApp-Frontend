@@ -1,50 +1,64 @@
 // src/app/services/login.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StorageService } from './storage.service';
+import { NGROK_HEADERS } from './http-options';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
- // private apiUrl = 'http://localhost:5230/api/Login';
- private apiUrl = 'https://a767-197-28-130-13.ngrok-free.app/api';
+
+  // ✅ BASE URL CORRECTE (backend: /api/auth)
+  private apiUrl = 'https://401a-197-28-128-214.ngrok-free.app/api/auth';
 
   constructor(
     private http: HttpClient,
     private storage: StorageService
   ) {}
 
+  // ================= LOGIN =================
   login(email: string, password: string): Observable<any> {
-    // Les noms des champs doivent correspondre exactement à ce que le backend attend
     const body = { email, password };
     console.log('📤 Envoi requête login:', body);
-    return this.http.post(`${this.apiUrl}/login`, body);
+
+    return this.http.post(`${this.apiUrl}/login`, body, { headers: NGROK_HEADERS });
   }
 
+  // ================= REGISTER =================
   register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, { username, email, password });
+    return this.http.post(`${this.apiUrl}/register`, {
+      username,
+      email,
+      password
+    }, { headers: NGROK_HEADERS });
   }
 
+  // ================= CHECK ADMIN =================
   checkAdminExists(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/check`);
+    return this.http.get(`${this.apiUrl}/check`, { headers: NGROK_HEADERS });
   }
 
+  // ================= SETUP ADMIN =================
   setupAdmin(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/setup`, { username, email, password });
+    return this.http.post(`${this.apiUrl}/setup`, {
+      username,
+      email,
+      password
+    }, { headers: NGROK_HEADERS });
   }
 
+  // ================= CURRENT USER =================
   getCurrentUser(email: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/current-user?email=${email}`);
+    return this.http.get(`${this.apiUrl}/current-user?email=${email}`, { headers: NGROK_HEADERS });
   }
 
+  // ================= STORAGE =================
   storeUserInfo(email: string, username: string): void {
     this.storage.setItem('isLoggedIn', 'true');
     this.storage.setItem('userEmail', email);
     this.storage.setItem('username', username);
-    console.log('📧 Email stocké:', email);
-    console.log('👤 Username stocké:', username);
   }
 
   getEmail(): string {
