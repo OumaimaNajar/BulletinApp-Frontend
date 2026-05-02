@@ -34,8 +34,8 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     // Vérifier si déjà connecté
     if (this.loginService.isLoggedIn()) {
-      console.log('✅ Déjà connecté, redirection vers /app/upload');
-      this.router.navigate(['/app/upload']);
+      console.log('✅ Déjà connecté, redirection vers /app/dashboard');
+      this.router.navigate(['/app/dashboard']);
       return;
     }
 
@@ -77,11 +77,11 @@ export class LoginComponent implements OnInit {
           
           // 🔥 FORCER LA REDIRECTION VERS /app/upload
           setTimeout(() => {
-            console.log('🚀 Redirection vers /app/upload...');
-            this.router.navigate(['/app/upload']).then(
+            console.log('🚀 Redirection vers /app/dashboard...');
+            this.router.navigate(['/app/dashboard']).then(
               (success) => {
                 if (success) {
-                  console.log('✅ Navigation réussie vers /app/upload');
+                  console.log('✅ Navigation réussie vers /app/dashboard');
                 } else {
                   console.error('❌ Navigation échouée');
                   // Fallback vers /home

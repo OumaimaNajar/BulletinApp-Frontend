@@ -3,19 +3,26 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M9 17H7A5 5 0 017 7h2M15 7h2a5 5 0 010 10h-2M8 12h8"/>
-        </svg>
-      </div>
-      <div class="logo-text">
-        <span class="logo-name">BulletinRH</span>
-        <span class="logo-sub">Système de paie</span>
-      </div>
-    </div>
+
+  <div class="logo-icon">
+    <img src="assets/fmc.png" />
+  </div>
+
+
+</div>
 
     <nav class="sidebar-nav">
       <span class="nav-section-label">Principal</span>
+
+      <a class="nav-item" routerLink="/app/dashboard" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Tableau de bord
+      </a>
 
       <a class="nav-item" routerLink="/app/upload" routerLinkActive="active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -27,15 +34,7 @@
         Envoi Emails
       </a>
 
-      <a class="nav-item" routerLink="/app/generer-eml" routerLinkActive="active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
-        </svg>
-        Envoi Brouillons
-      </a>
 
-  
 
     
 

@@ -1,81 +1,82 @@
 // src/app/services/login.service.ts
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { StorageService } from './storage.service';
-import { NGROK_HEADERS } from './http-options';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-
-  // ✅ BASE URL CORRECTE (backend: /api/auth)
-  private apiUrl = 'https://401a-197-28-128-214.ngrok-free.app/api/auth';
+  private apiUrl = 'http://localhost:5230/api/Login';
+  private isBrowser: boolean;
 
   constructor(
     private http: HttpClient,
-    private storage: StorageService
-  ) {}
+    @Inject(PLATFORM_ID) private platformId: any
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
-  // ================= LOGIN =================
   login(email: string, password: string): Observable<any> {
     const body = { email, password };
-    console.log('📤 Envoi requête login:', body);
-
-    return this.http.post(`${this.apiUrl}/login`, body, { headers: NGROK_HEADERS });
+    console.log('📤 Envoi requête login à:', `${this.apiUrl}/login`);
+    return this.http.post(`${this.apiUrl}/login`, body);
   }
 
-  // ================= REGISTER =================
   register(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, {
-      username,
-      email,
-      password
-    }, { headers: NGROK_HEADERS });
+    return this.http.post(`${this.apiUrl}/register`, { username, email, password });
   }
 
-  // ================= CHECK ADMIN =================
   checkAdminExists(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/check`, { headers: NGROK_HEADERS });
+    console.log('🔍 Vérification admin sur:', `${this.apiUrl}/check`);
+    return this.http.get(`${this.apiUrl}/check`);
   }
 
-  // ================= SETUP ADMIN =================
   setupAdmin(username: string, email: string, password: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/setup`, {
-      username,
-      email,
-      password
-    }, { headers: NGROK_HEADERS });
+    return this.http.post(`${this.apiUrl}/setup`, { username, email, password });
   }
 
-  // ================= CURRENT USER =================
   getCurrentUser(email: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/current-user?email=${email}`, { headers: NGROK_HEADERS });
+    return this.http.get(`${this.apiUrl}/current-user?email=${email}`);
   }
 
-  // ================= STORAGE =================
   storeUserInfo(email: string, username: string): void {
-    this.storage.setItem('isLoggedIn', 'true');
-    this.storage.setItem('userEmail', email);
-    this.storage.setItem('username', username);
+    if (this.isBrowser) {
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('username', username);
+      console.log('📧 Email stocké:', email);
+      console.log('👤 Username stocké:', username);
+    }
   }
 
   getEmail(): string {
-    return this.storage.getItem('userEmail') || '';
+    if (this.isBrowser) {
+      return localStorage.getItem('userEmail') || '';
+    }
+    return '';
   }
 
   getUsername(): string {
-    return this.storage.getItem('username') || '';
+    if (this.isBrowser) {
+      return localStorage.getItem('username') || '';
+    }
+    return '';
   }
 
   isLoggedIn(): boolean {
-    return this.storage.getItem('isLoggedIn') === 'true';
+    if (this.isBrowser) {
+      return localStorage.getItem('isLoggedIn') === 'true';
+    }
+    return false;
   }
 
   logout(): void {
-    this.storage.removeItem('isLoggedIn');
-    this.storage.removeItem('userEmail');
-    this.storage.removeItem('username');
+    if (this.isBrowser) {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('username');
+    }
   }
 }

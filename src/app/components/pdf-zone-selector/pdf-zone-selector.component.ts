@@ -164,7 +164,7 @@ export class PdfZoneSelectorComponent {
   formData.append("zone", JSON.stringify(zone));
 
   this.http.post<any>(
-    "https://401a-197-28-128-214.ngrok-free.app/api/Bulletins/process-zone-all-pages",
+    "http://localhost:5230/api/Bulletins/process-zone-all-pages",
     formData
   ).subscribe({
     next: (res) => {
@@ -198,7 +198,6 @@ saveModele() {
 };
 
   console.log("ZONE FRONT =>", zone);
-
 
   this.modeleService.addModele(this.selectedFile, this.libelle, zone)
     .subscribe({

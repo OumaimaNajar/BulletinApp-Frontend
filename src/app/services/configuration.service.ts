@@ -2,48 +2,45 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { NGROK_HEADERS } from './http-options';
-
-export interface ExpediteurEmailResponse {
-  email: string;
-}
-
-export interface SetEmailResponse {
-  success: boolean;
-  message: string;
-  email: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigurationService {
+  private apiUrl = 'http://localhost:5230/api/Configuration';
 
-  // ⚠️ IMPORTANT : évite de terminer par /api si ton backend ne l’utilise pas partout
-  private apiUrl = 'https://401a-197-28-128-214.ngrok-free.app/api/Configuration';
+  constructor(private http: HttpClient) { }
 
-  constructor(private http: HttpClient) {}
-
-  private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
+  // Récupérer l'email expéditeur
+  getExpediteurEmail(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/expediteur-email`);
   }
 
-  // 🔹 GET email expéditeur
-  getExpediteurEmail(): Observable<ExpediteurEmailResponse> {
-    return this.http.get<ExpediteurEmailResponse>(
-      `${this.apiUrl}/expediteur-email`,
-      { headers: NGROK_HEADERS }
-    );
+  // Enregistrer l'email expéditeur
+  setExpediteurEmail(email: string): Observable<any> {
+    // 🔥 Important : body doit être exactement { "email": "valeur" }
+    const body = { email: email };
+    console.log('📤 Envoi vers API:', `${this.apiUrl}/expediteur-email`);
+    console.log('📦 Body:', JSON.stringify(body));
+    
+    return this.http.post(`${this.apiUrl}/expediteur-email`, body);
   }
 
-  // 🔹 POST email expéditeur
-  setExpediteurEmail(email: string): Observable<SetEmailResponse> {
-    return this.http.post<SetEmailResponse>(
-      `${this.apiUrl}/expediteur-email`,
-      { email },
-      { headers: NGROK_HEADERS }
-    );
+  // Récupérer la configuration CC
+  getCcConfiguration(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/cc-configuration`);
+  }
+
+  // Enregistrer la configuration CC
+  setCcConfiguration(cc: string): Observable<any> {
+    const body = { cc: cc };
+    console.log('📤 Envoi CC vers API:', `${this.apiUrl}/cc-configuration`);
+    console.log('📦 Body CC:', JSON.stringify(body));
+    return this.http.post(`${this.apiUrl}/cc-configuration`, body);
+  }
+
+  // Supprimer la configuration CC
+  deleteCcConfiguration(): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/cc-configuration`);
   }
 }

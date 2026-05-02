@@ -1,291 +1,91 @@
-<!-- src/app/components/generer-eml/generer-eml.component.html -->
 <div class="generer-eml-container">
-  <!-- Carte principale - Génération EML -->
-  <div class="card principal-card">
-    <div class="card-header bg-gradient-primary">
-      <div class="header-icon">
-        <i class="fas fa-envelope-open-text"></i>
-      </div>
-      <h3 class="card-title">Génération et Stockage des Bulletins</h3>
-      <p class="card-subtitle">Créez des brouillons d'emails avec pièces jointes PDF</p>
+
+  <!-- HEADER MODERNE -->
+  <div class="eml-hero">
+    <div class="hero-icon">
+      <i class="fas fa-envelope-open-text"></i>
     </div>
-    
-    <div class="card-body">
-      <!-- Formulaire -->
-      <form [formGroup]="emlForm" (ngSubmit)="onSubmit()" class="main-form">
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">
-              <i class="fas fa-file-pdf"></i> Modèle PDF
-              <span class="required">*</span>
-            </label>
-            <select class="form-control" formControlName="modeleId">
-              <option [ngValue]="null">-- Sélectionnez un modèle --</option>
-              <option *ngFor="let modele of modeles" [ngValue]="modele.id">
-                {{ modele.libelle }}
-              </option>
-            </select>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label">
-              <i class="fas fa-envelope"></i> Email expéditeur
-              <span class="required">*</span>
-            </label>
-            <input type="email" class="form-control" 
-                   formControlName="emailExpediteur" 
-                   placeholder="exemple@gmail.com">
-            <small class="form-hint">Détermine si Gmail ou Outlook sera utilisé</small>
-            <div *ngIf="emailExpediteurConfigure" class="email-configured">
-              <i class="fas fa-check-circle"></i>
-              Email configuré: {{ emailExpediteurConfigure }}
-            </div>
-          </div>
+    <div class="hero-text">
+      <h2>Génération des Bulletins</h2>
+      <p>Création automatique des brouillons EML avec pièces jointes PDF</p>
+    </div>
 
-          <div class="form-group">
-            <label class="form-label">
-              <i class="fas fa-building"></i> Département
-            </label>
-            <select class="form-control" formControlName="departement">
-              <option [ngValue]="null">-- Tous les départements --</option>
-              <option *ngFor="let dept of departements" [ngValue]="dept.nom">
-                {{ dept.nom }} ({{ dept.count }} employés)
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">
-              <i class="fas fa-folder"></i> Service
-            </label>
-            <select class="form-control" formControlName="service">
-              <option [ngValue]="null">-- Tous les services --</option>
-              <option *ngFor="let serv of services" [ngValue]="serv.nom">
-                {{ serv.nom }} ({{ serv.count }} employés)
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-            <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-play'"></i>
-            <span>{{ isLoading ? 'Traitement en cours...' : 'Générer et Stocker' }}</span>
-          </button>
-          
-          <button type="button" class="btn btn-secondary" (click)="onPreview()" [disabled]="isLoading">
-            <i class="fas fa-eye"></i>
-            <span>Aperçu</span>
-          </button>
-          
-          <button type="button" class="btn btn-outline" (click)="clearForm()">
-            <i class="fas fa-eraser"></i>
-            <span>Effacer</span>
-          </button>
-
-          <!-- NOUVEAU BOUTON D'ENVOI DES BROUILLONS -->
-          <button type="button" class="btn btn-success" 
-                  (click)="envoyerTousLesBrouillons()"
-                  [disabled]="isEnvoiEnCours">
-            <i class="fas" [ngClass]="{'fa-spinner fa-spin': isEnvoiEnCours, 'fa-paper-plane': !isEnvoiEnCours}"></i>
-            <span>{{ isEnvoiEnCours ? 'Envoi en cours...' : 'Envoyer les brouillons' }}</span>
-          </button>
-        </div>
-      </form>
-
-      <!-- Loading State -->
-      <div *ngIf="isLoading" class="loading-overlay">
-        <div class="loading-content">
-          <div class="loading-spinner"></div>
-          <h4>Génération en cours...</h4>
-          <p>Création des fichiers EML et stockage dans les brouillons</p>
-        </div>
-      </div>
+    <div class="hero-badge">
+      <span>Workflow automatisé</span>
     </div>
   </div>
 
-  <!-- NOUVELLE CARTE: Console des logs -->
-  <div class="card logs-card" *ngIf="logs.length > 0">
-    <div class="card-header bg-dark">
-      <div class="card-header-content">
-        <div class="header-left">
-          <i class="fas fa-terminal"></i>
-          <h4>Console d'exécution</h4>
-          <span class="log-count">{{ logs.length }} message(s)</span>
+  <!-- CARTE -->
+  <div class="card eml-card">
+
+    <form [formGroup]="emlForm" (ngSubmit)="onSubmit()" class="eml-form">
+
+      <!-- GRID -->
+      <div class="eml-grid">
+
+        <!-- MODELE -->
+        <div class="eml-field">
+          <label>Modèle PDF</label>
+          <select class="field-select" formControlName="modeleId">
+            <option [ngValue]="null">Sélectionner un modèle</option>
+            <option *ngFor="let modele of modeles" [ngValue]="modele.id">
+              {{ modele.libelle }}
+            </option>
+          </select>
         </div>
-        <button class="btn-clear-logs" (click)="clearLogs()" title="Effacer les logs">
-          <i class="fas fa-trash-alt"></i>
+
+        <!-- EMAIL -->
+        <div class="eml-field">
+          <label>Email expéditeur</label>
+          <input type="email" class="input" formControlName="emailExpediteur">
+        </div>
+
+        <!-- DEPARTEMENT -->
+        <div class="eml-field">
+          <label>Département</label>
+          <select class="field-select" formControlName="departement">
+            <option [ngValue]="null">Tous</option>
+            <option *ngFor="let dept of departements" [ngValue]="dept.nom">
+              {{ dept.nom }}
+            </option>
+          </select>
+        </div>
+
+        <!-- SERVICE -->
+        <div class="eml-field">
+          <label>Service</label>
+          <select class="field-select" formControlName="service">
+            <option [ngValue]="null">Tous</option>
+            <option *ngFor="let serv of services" [ngValue]="serv.nom">
+              {{ serv.nom }}
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="eml-actions">
+
+        <button class="btn primary" type="submit" [disabled]="isLoading">
+          <i class="fas" [ngClass]="isLoading ? 'fa-spinner fa-spin' : 'fa-magic'"></i>
+          Générer
         </button>
+
+        <button class="btn outline" type="button" (click)="onPreview()">
+          <i class="fas fa-eye"></i>
+          Aperçu
+        </button>
+
+        <button class="btn success" type="button" (click)="envoyerTousLesBrouillons()">
+          <i class="fas fa-paper-plane"></i>
+          Envoyer
+        </button>
+
       </div>
-    </div>
-    <div class="card-body logs-body">
-      <div *ngFor="let log of logs" class="log-entry" [ngClass]="'log-' + log.type">
-        <span class="log-time">{{ formatDate(log.timestamp) }}</span>
-        <i class="fas" [ngClass]="{
-          'fa-check-circle': log.type === 'success',
-          'fa-times-circle': log.type === 'error',
-          'fa-exclamation-triangle': log.type === 'warning',
-          'fa-info-circle': log.type === 'info'
-        }"></i>
-        <span class="log-message">{{ log.message }}</span>
-      </div>
-    </div>
+
+    </form>
   </div>
 
-  <!-- Modal Résultat - Génération EML -->
-  <div *ngIf="showResultModal" class="modal-backdrop" (click)="closeResultModal()">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">
-          <i class="fas" [ngClass]="result?.success ? 'fa-check-circle' : 'fa-times-circle'"></i>
-          {{ result?.success ? 'Succès' : 'Erreur' }}
-        </h3>
-        <button class="modal-close" (click)="closeResultModal()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-stats">
-          <div class="modal-stat" [class.modal-stat--success]="result?.success">
-            <span class="modal-stat-value">{{ result?.brouillonsCrees || 0 }}</span>
-            <span class="modal-stat-label">Brouillons créés</span>
-          </div>
-          <div class="modal-stat">
-            <span class="modal-stat-value">{{ result?.typeClient === 'gmail' ? 'Gmail' : (result?.typeClient === 'outlook' ? 'Outlook' : '?') }}</span>
-            <span class="modal-stat-label">Client email</span>
-          </div>
-        </div>
-        
-        <div *ngIf="result?.output" class="result-details">
-          <pre class="details-content">{{ result?.output }}</pre>
-        </div>
-        
-        <div *ngIf="result?.error" class="result-error">
-          <i class="fas fa-exclamation-triangle"></i>
-          <span>{{ result?.error }}</span>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary btn-sm" (click)="closeResultModal()">Fermer</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- NOUVEAU MODAL: Résultat d'envoi des brouillons -->
-  <div *ngIf="showEnvoiModal && envoiResultat" class="modal-backdrop" (click)="closeEnvoiModal()">
-    <div class="modal modal--wide" (click)="$event.stopPropagation()">
-      <div class="modal-header" [ngClass]="envoiResultat.success ? 'modal-header-success' : 'modal-header-error'">
-        <h3 class="modal-title">
-          <i class="fas" [ngClass]="envoiResultat.success ? 'fa-check-circle' : 'fa-times-circle'"></i>
-          {{ envoiResultat.success ? 'Envoi réussi' : 'Échec de l\'envoi' }}
-        </h3>
-        <button class="modal-close" (click)="closeEnvoiModal()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p class="modal-message">{{ envoiResultat.message }}</p>
-        
-        <!-- Statistiques -->
-        <div class="modal-stats" *ngIf="envoiResultat.total && envoiResultat.total > 0">
-          <div class="modal-stat">
-            <span class="modal-stat-value">{{ envoiResultat.total || 0 }}</span>
-            <span class="modal-stat-label">Total brouillons</span>
-          </div>
-          <div class="modal-stat modal-stat--success">
-            <span class="modal-stat-value">{{ envoiResultat.envoyes || 0 }}</span>
-            <span class="modal-stat-label">Envoyés</span>
-          </div>
-          <div class="modal-stat" [class.modal-stat--error]="(envoiResultat.echecs || 0) > 0">
-            <span class="modal-stat-value">{{ envoiResultat.echecs || 0 }}</span>
-            <span class="modal-stat-label">Échecs</span>
-          </div>
-        </div>
-
-        <!-- Barre de progression -->
-        <div *ngIf="envoiResultat.total && envoiResultat.total > 0" class="progress-bar-container">
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill progress-success" 
-                 [style.width.%]="((envoiResultat.envoyes || 0) / (envoiResultat.total || 1)) * 100">
-              <span>{{ envoiResultat.envoyes || 0 }}</span>
-            </div>
-            <div *ngIf="(envoiResultat.echecs || 0) > 0" 
-                 class="progress-bar-fill progress-danger" 
-                 [style.width.%]="((envoiResultat.echecs || 0) / (envoiResultat.total || 1)) * 100">
-              <span>{{ envoiResultat.echecs || 0 }}</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Détails des erreurs -->
-        <div *ngIf="envoiResultat.erreurs && envoiResultat.erreurs.length > 0" class="error-details">
-          <h4>
-            <i class="fas fa-exclamation-triangle"></i>
-            Détails des erreurs ({{ envoiResultat.erreurs.length }})
-          </h4>
-          <div class="error-list">
-            <div *ngFor="let erreur of envoiResultat.erreurs" class="error-item">
-              <i class="fas fa-times-circle"></i>
-              <strong>{{ erreur.email }}:</strong> {{ erreur.raison }}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary btn-sm" (click)="closeEnvoiModal()">Fermer</button>
-        <button *ngIf="envoiResultat.echecs && envoiResultat.echecs > 0" class="btn btn-warning btn-sm" (click)="envoyerTousLesBrouillons(); closeEnvoiModal()">
-          <i class="fas fa-redo-alt"></i>
-          Réessayer
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Aperçu -->
-  <div *ngIf="showPreviewModal" class="modal-backdrop" (click)="closePreviewModal()">
-    <div class="modal modal--wide" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h3 class="modal-title">
-          <i class="fas fa-chart-bar"></i>
-          Aperçu des bulletins à envoyer
-        </h3>
-        <button class="modal-close" (click)="closePreviewModal()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="modal-stats">
-          <div class="modal-stat">
-            <span class="modal-stat-value">{{ previewResult?.total || 0 }}</span>
-            <span class="modal-stat-label">Total employés</span>
-          </div>
-          <div class="modal-stat modal-stat--success">
-            <span class="modal-stat-value">{{ previewResult?.detectedCount || 0 }}</span>
-            <span class="modal-stat-label">Détectés</span>
-          </div>
-          <div class="modal-stat modal-stat--error">
-            <span class="modal-stat-value">{{ (previewResult?.total || 0) - (previewResult?.detectedCount || 0) }}</span>
-            <span class="modal-stat-label">Non détectés</span>
-          </div>
-        </div>
-        
-        <h4 class="modal-section-title">Détails par employé</h4>
-        <div class="detail-list">
-          <div *ngFor="let detail of previewResult?.details" class="detail-row">
-            <div class="detail-info">
-              <span class="detail-name">{{ detail?.prenom }} {{ detail?.nom }}</span>
-              <span class="detail-badge detail-badge--dept">{{ detail?.departement || '-' }}</span>
-              <span class="detail-badge detail-badge--svc">{{ detail?.service || '-' }}</span>
-            </div>
-            <span class="detail-status" [class.detail-status--ok]="detail?.page">
-              {{ detail?.page ? '✓ Page ' + detail.page : '✗ Non trouvé' }}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary btn-sm" (click)="closePreviewModal()">Fermer</button>
-      </div>
-    </div>
-  </div>
 </div>
