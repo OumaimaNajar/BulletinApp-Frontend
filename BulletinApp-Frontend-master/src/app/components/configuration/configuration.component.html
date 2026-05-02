@@ -1,0 +1,106 @@
+<!-- HEADER MODERNE - STYLE HERO -->
+<div class="eml-hero">
+  <div class="hero-icon">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </div>
+  <div class="hero-text">
+    <h2>Configuration</h2>
+    <p>Personnalisez les paramètres d'envoi des emails</p>
+  </div>
+  <div class="hero-right">
+    <div class="topbar-avatar" [title]="username">{{ userInitials }}</div>
+  </div>
+</div>
+
+<!-- CONTENU PRINCIPAL -->
+<div class="config-container">
+  <div class="config-card">
+
+    <!-- Ligne EXPÉDITEUR -->
+    <div class="config-row">
+      <div class="row-label">
+        <div class="label-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <span class="label-text">Expéditeur</span>
+      </div>
+      <div class="row-input">
+        <div class="input-wrapper">
+          <input 
+            type="email" 
+            [(ngModel)]="expediteurEmail" 
+            placeholder="exemple@domaine.com"
+            [class.error]="expediteurEmail && !isValidEmail(expediteurEmail)"
+          />
+        </div>
+        <small *ngIf="expediteurEmail && !isValidEmail(expediteurEmail)" class="error-text">⚠️ Format d'email invalide</small>
+        <small class="info-text">Email qui enverra les bulletins</small>
+      </div>
+      <div class="row-action">
+        <button class="btn-save" (click)="saveExpediteur()" [disabled]="isLoadingExpediteur || isLoadingData">
+          <span *ngIf="isLoadingExpediteur" class="spinner-small"></span>
+          <svg *ngIf="!isLoadingExpediteur" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          {{ isLoadingExpediteur ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Ligne CC (COPIE CARBONE) -->
+    <div class="config-row">
+      <div class="row-label">
+        <div class="label-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M22 7l-10 7L2 7"/>
+          </svg>
+        </div>
+        <span class="label-text">CC</span>
+      </div>
+      <div class="row-input">
+        <div class="input-wrapper">
+          <input 
+            type="email" 
+            [(ngModel)]="ccEmail" 
+            placeholder="copie@monentreprise.com"
+            [class.error]="ccEmail && !isValidEmail(ccEmail)"
+          />
+        </div>
+        <div *ngIf="savedCcEmail && !ccEmail" class="cc-badge">
+          <span class="badge-icon">📧</span>
+          <span class="badge-text">CC actuel: {{ savedCcEmail }}</span>
+          <button class="badge-remove" (click)="clearCc()" title="Supprimer">✕</button>
+        </div>
+        <small *ngIf="ccEmail && !isValidEmail(ccEmail)" class="error-text">⚠️ Format d'email invalide</small>
+        <small class="info-text">Email en copie de tous les envois (optionnel)</small>
+      </div>
+      <div class="row-action">
+        <button class="btn-save btn-save-secondary" (click)="saveCc()" [disabled]="isLoadingCc || isLoadingData">
+          <span *ngIf="isLoadingCc" class="spinner-small"></span>
+          <svg *ngIf="!isLoadingCc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          {{ isLoadingCc ? 'Enregistrement...' : 'Enregistrer' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Message de notification -->
+    <div *ngIf="showMessage" class="notification" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+      <span class="notification-icon">{{ messageType === 'success' ? '✓' : '✗' }}</span>
+      <span>{{ message }}</span>
+    </div>
+
+  </div>
+</div>

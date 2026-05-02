@@ -1,0 +1,86 @@
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+
+  <div class="logo-icon">
+    <img src="assets/fmc.png" />
+  </div>
+
+
+</div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Principal</span>
+
+      <a class="nav-item" routerLink="/app/dashboard" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Tableau de bord
+      </a>
+
+      <a class="nav-item" routerLink="/app/upload" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Envoi Emails
+      </a>
+
+
+
+    
+
+      <span class="nav-section-label">Configuration</span>
+
+      <a class="nav-item" routerLink="/app/modele" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        Modèles
+      </a>
+
+      <!-- 🔥 Configuration - Lien corrigé -->
+      <a class="nav-item" routerLink="/app/configuration" routerLinkActive="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/>
+        </svg>
+        Configuration
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+  <div class="sidebar-user">
+
+    <!-- Avatar avec initiales dynamiques -->
+    <div class="user-avatar">{{ userInitials }}</div>
+
+    <div class="user-info">
+      <!-- Nom de l'utilisateur connecté -->
+      <span class="user-name">{{ username }}</span>
+
+      <!-- Statut toujours actif (static) -->
+      <span class="user-role">
+        <span class="user-status-dot"></span>
+        Actif
+      </span>
+    </div>
+
+  </div>
+</div>
+  </aside>
+
+  <!-- CONTENU DYNAMIQUE -->
+  <main class="main">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

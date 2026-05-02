@@ -1,0 +1,229 @@
+<div class="login-container">
+  <div class="login-card">
+
+    <!-- ===== PANNEAU GAUCHE (bleu nuit) ===== -->
+    <div class="login-left">
+      <div class="left-top">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            <path d="M14 17.5h7M17.5 14v7"/>
+          </svg>
+        </div>
+        <h1>BulletinApp</h1>
+        <p class="brand-subtitle">Plateforme de gestion des bulletins de paie</p>
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="feature-dot"></div>
+            <span>Génération automatique des bulletins</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-dot"></div>
+            <span>Gestion des employés centralisée</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-dot"></div>
+            <span>Export PDF &amp; archivage sécurisé</span>
+          </div>
+          <div class="feature-item">
+            <div class="feature-dot"></div>
+            <span>Tableau de bord analytique</span>
+          </div>
+        </div>
+      </div>
+      <div class="left-footer">
+        <p>© 2024 BulletinApp — Tous droits réservés</p>
+      </div>
+    </div>
+
+    <!-- ===== PANNEAU DROIT (formulaires) ===== -->
+    <div class="login-right">
+
+      <!-- Formulaire de création du premier admin -->
+      @if (showSetup) {
+        <div class="form-wrapper">
+          <div class="form-header">
+            <div class="form-eyebrow">Configuration initiale</div>
+            <h2 class="form-title">Créer l'administrateur</h2>
+            <p class="form-desc">Configurez votre premier compte pour démarrer</p>
+          </div>
+          <div class="setup-notice">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v4m0 4h.01"/>
+            </svg>
+            <span>Aucun administrateur détecté — première configuration requise</span>
+          </div>
+          
+          <div class="input-group">
+            <label for="setupUsername">Nom d'utilisateur</label>
+            <input
+              id="setupUsername"
+              type="text"
+              [(ngModel)]="setupUsername"
+              placeholder="ex: admin"
+              [disabled]="loading"
+              autocomplete="username"
+            />
+          </div>
+          
+          <div class="input-group">
+            <label for="setupEmail">Email</label>
+            <input
+              id="setupEmail"
+              type="email"
+              [(ngModel)]="setupEmail"
+              placeholder="admin@entreprise.com"
+              [disabled]="loading"
+              autocomplete="email"
+            />
+          </div>
+          
+          <div class="input-group">
+            <label for="setupPassword">Mot de passe</label>
+            <input
+              id="setupPassword"
+              type="password"
+              [(ngModel)]="setupPassword"
+              placeholder="Minimum 6 caractères"
+              [disabled]="loading"
+              autocomplete="new-password"
+            />
+          </div>
+          
+          <div class="input-group">
+            <label for="setupConfirmPassword">Confirmer le mot de passe</label>
+            <input
+              id="setupConfirmPassword"
+              type="password"
+              [(ngModel)]="setupConfirmPassword"
+              placeholder="Retapez votre mot de passe"
+              [disabled]="loading"
+              autocomplete="new-password"
+            />
+          </div>
+          
+          @if (setupMessage) {
+            <div class="message" [class.error]="!setupMessage.includes('succès')" [class.success]="setupMessage.includes('succès')">
+              {{ setupMessage }}
+            </div>
+          }
+          
+          <button class="btn-primary" (click)="onSetup()" [disabled]="loading">
+            <span>{{ loading ? 'Création...' : 'Créer l\'administrateur' }}</span>
+            @if (!loading) {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            }
+          </button>
+          
+          <button class="btn-secondary" (click)="cancelSetup()" [disabled]="loading">
+            Annuler
+          </button>
+        </div>
+      }
+
+      <!-- Formulaire de connexion -->
+      @if (!showSetup) {
+        <div class="form-wrapper">
+          <div class="form-header">
+            <div class="form-eyebrow">Accès sécurisé</div>
+            <h2 class="form-title">Bienvenue</h2>
+            <p class="form-desc">Connectez-vous pour accéder à votre espace</p>
+          </div>
+          
+          <!-- Champ Email -->
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              [(ngModel)]="email"
+              placeholder="exemple@email.com"
+              [disabled]="loading"
+              (keyup.enter)="onSubmit()"
+              autocomplete="email"
+            />
+          </div>
+          
+          <!-- Champ Mot de passe -->
+          <div class="input-group">
+            <label for="password">Mot de passe</label>
+            <input
+              id="password"
+              type="password"
+              [(ngModel)]="password"
+              placeholder="••••••••"
+              [disabled]="loading"
+              (keyup.enter)="onSubmit()"
+              autocomplete="current-password"
+            />
+          </div>
+          
+          <button class="btn-primary" (click)="onSubmit()" [disabled]="loading">
+            <span>{{ loading ? 'Connexion...' : 'Se connecter' }}</span>
+            @if (!loading) {
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            }
+          </button>
+          
+          <div class="login-footer">
+            <p>Accès réservé au personnel autorisé</p>
+          </div>
+        </div>
+      }
+
+    </div>
+    <!-- fin login-right -->
+
+  </div>
+</div>
+
+<!-- ===== TOAST DE SUCCÈS ===== -->
+@if (showSuccessToast) {
+  <div class="toast-success">
+    <div class="toast-content">
+      <div class="toast-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <div class="toast-message">{{ successMessage }}</div>
+    </div>
+  </div>
+}
+
+<!-- ===== POPUP D'ERREUR ===== -->
+@if (showErrorPopup) {
+  <div class="popup-overlay" (click)="closeErrorPopup()">
+    <div class="popup-container" (click)="$event.stopPropagation()">
+      <div class="popup-icon error">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <h3 class="popup-title">Échec de connexion</h3>
+      <p class="popup-message">{{ errorMessage }}</p>
+      <div class="popup-actions">
+        <button class="popup-button" (click)="closeErrorPopup()">Fermer</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ===== LOADING POPUP ===== -->
+@if (loading) {
+  <div class="popup-overlay">
+    <div class="popup-container loading-popup">
+      <div class="spinner"></div>
+      <p class="loading-text">Connexion en cours...</p>
+    </div>
+  </div>
+}

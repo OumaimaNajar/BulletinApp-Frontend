@@ -1,0 +1,107 @@
+<!-- dashboard.component.html -->
+
+<!-- HEADER -->
+<div class="eml-hero">
+  <div class="hero-text">
+    <h2>📊 Tableau de bord</h2>
+    <p>Bienvenue {{ username }}, dans votre espace d'administration</p>
+  </div>
+  <div class="hero-right">
+    <button class="refresh-btn" (click)="refreshStats()" title="Rafraîchir">
+      🔄
+    </button>
+    <div class="topbar-avatar" [title]="username">{{ userInitials }}</div>
+  </div>
+</div>
+
+<!-- Message d'erreur -->
+<div class="error-message" *ngIf="errorMessage">
+  ⚠️ {{ errorMessage }}
+</div>
+
+<!-- STATS GRID -->
+<div class="stats-grid" *ngIf="!loading; else loadingTemplate">
+  <div class="stat-card">
+    <div class="stat-icon blue">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M4 4h16v16H4z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+    </div>
+    <div>
+      <h3>{{ brouillonsGeneres | number }}</h3>
+      <p>Brouillons générés</p>
+      <small>📦 Stockés dans Gmail/Outlook</small>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon green">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+      </svg>
+    </div>
+    <div>
+      <h3>{{ brouillonsEnvoyes | number }}</h3>
+      <p>Brouillons envoyés</p>
+      <small>✉️ Emails expédiés</small>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon orange">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 6v6l4 2"/>
+      </svg>
+    </div>
+    <div>
+      <h3>{{ tauxReussite }}%</h3>
+      <p>Taux d'envoi</p>
+      <small>{{ brouillonsEnvoyes }} / {{ brouillonsGeneres }}</small>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon purple">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 8v4l3 3M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20z"/>
+      </svg>
+    </div>
+    <div>
+      <h3>{{ totalOperations | number }}</h3>
+      <p>Total opérations</p>
+      <small>Dernière MAJ: {{ derniereMAJFormatee || 'Chargement...' }}</small>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="stats-grid">
+    <div class="stat-card skeleton-card" *ngFor="let i of [1,2,3,4]">
+      <div class="stat-icon skeleton"></div>
+      <div>
+        <h3 class="skeleton-text">---</h3>
+        <p class="skeleton-text">---</p>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- ACTIONS RAPIDES -->
+<div class="dashboard-grid">
+  <div class="card">
+    <h2>⚡ Actions rapides</h2>
+    <div class="quick-actions">
+      <button routerLink="/upload">
+        📤 Importer des bulletins
+      </button>
+      <button routerLink="/modeles">
+        🏷️ Gérer les modèles
+      </button>
+      <button routerLink="/configuration">
+        ⚙️ Configuration
+      </button>
+    </div>
+  </div>
+</div>

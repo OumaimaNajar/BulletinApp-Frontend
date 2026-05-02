@@ -1,0 +1,198 @@
+<div class="app-wrapper">
+
+  <!-- HEADER / NAVBAR -->
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <img src="assets/fmc.png" alt="FMC DIGITAL" class="logo-img">
+        <span class="logo-text"></span>
+      </div>
+      <nav class="navbar">
+        <ul class="nav-menu">
+          <li><a routerLink="/home" class="active">Accueil</a></li>
+          <li class="dropdown">
+            <a href="javascript:void(0)">Logiciels ▼</a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Sage X3</a></li>
+              <li><a href="#">Sage 50cloud Ciel</a></li>
+              <li><a href="#">Sage 100cloud</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="javascript:void(0)">Formations ▼</a>
+            <ul class="dropdown-menu">
+              <li><a routerLink="/modele">Formation Power BI</a></li>
+              <li><a href="#">Formation Sage X3</a></li>
+              <li><a href="#">Formation Power Platform</a></li>
+            </ul>
+          </li>
+          <li><a href="#">E-learning</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <!-- Bouton Login / User menu -->
+        @if (!isLoggedIn) {
+          <div class="auth-buttons">
+            <a routerLink="/login" class="btn-login">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              Connexion
+            </a>
+          </div>
+        }
+        @if (isLoggedIn) {
+          <div class="user-menu">
+            <span class="user-name">👋 {{ username }}</span>
+            <button class="btn-logout" (click)="logout()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l4-4-4-4M12 13h8"/>
+              </svg>
+              Déconnexion
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1>FMC DIGITAL</h1>
+        <p>Automatisation intelligente des bulletins de paie & solutions RH modernes</p>
+        <div class="hero-buttons">
+          @if (!isLoggedIn) {
+            <button routerLink="/login" class="btn btn-primary">
+              🔐 Espace client
+            </button>
+          }
+          @if (isLoggedIn) {
+            <button routerLink="/upload" class="btn btn-primary">
+              📊 Accéder à mon espace
+            </button>
+          }
+          <button routerLink="/modele" class="btn btn-outline">
+            🎓 Simulation gratuite
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTIONS SECTION -->
+  <section class="solutions">
+    <div class="container">
+      <h2 class="section-title">Les Solutions FMC Digital</h2>
+      <div class="solutions-grid">
+        <div class="solution-card">
+          <div class="solution-icon">🏢</div>
+          <h3>Intégration des solutions de gestion</h3>
+          <p>Les performances des systèmes d'information Sage pour votre gestion, votre comptabilité, vos stocks, vos employés…</p>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">🎓</div>
+          <h3>Formation professionnelle</h3>
+          <p>Des formations complètes en blended learning, e-learning, présentiel, visioconférence et assistance.</p>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">📊</div>
+          <h3>Business Intelligence</h3>
+          <p>Notre expertise sur Power BI vous apporte des solutions d'analyse et de pilotage de la performance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMATIONS SECTION -->
+  <section class="formations">
+    <div class="container">
+      <h2 class="section-title">Nos formations</h2>
+      <div class="formations-grid">
+        <div class="formation-card">
+          <div class="formation-image">📊</div>
+          <h3>Formation Power BI</h3>
+          <p>Maîtrisez l'analyse de données avec Power BI</p>
+          <a routerLink="/modele" class="btn-link">Découvrir →</a>
+        </div>
+        <div class="formation-card">
+          <div class="formation-image">📈</div>
+          <h3>Formation Sage X3</h3>
+          <p>Administrez et développez sur Sage X3</p>
+          <a href="#" class="btn-link">Découvrir →</a>
+        </div>
+        <div class="formation-card">
+          <div class="formation-image">⚙️</div>
+          <h3>Power Platform</h3>
+          <p>Automatisez vos processus métier</p>
+          <a href="#" class="btn-link">Découvrir →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section class="certifications">
+    <div class="container">
+      <div class="certif-grid">
+        <div class="certif-card">
+          <div class="certif-icon">✅</div>
+          <p>Certification Qualiopi</p>
+          <small>Actions de formation</small>
+        </div>
+        <div class="certif-card">
+          <div class="certif-icon">📚</div>
+          <p>DataDock</p>
+          <small>Financement CPF</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter">
+    <div class="container">
+      <h3>Newsletter</h3>
+      <p>Abonnez-vous pour recevoir nos actualités</p>
+      <div class="newsletter-form">
+        <input type="email" placeholder="Votre adresse e-mail">
+        <button class="btn btn-primary">S'abonner</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>FMC Digital</h4>
+          <p>Intégrateur Sage à forte valeur ajoutée</p>
+        </div>
+        <div class="footer-col">
+          <h4>Liens rapides</h4>
+          <ul>
+            <li><a routerLink="/home">Accueil</a></li>
+            <li><a routerLink="/upload">Bulletins</a></li>
+            <li><a routerLink="/modele">Modèles</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <p>📞 +216 70 000 000</p>
+          <p>✉️ contact&#64;fmcdigital.com</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 FMC Digital - Tous droits réservés</p>
+      </div>
+    </div>
+  </footer>
+
+</div>

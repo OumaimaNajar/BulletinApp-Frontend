@@ -1,0 +1,135 @@
+.generer-eml-container {
+  padding: 24px;
+  background: #f4f7fb;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* HERO */
+.eml-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #183da1, #0a1628);
+  color: white;
+  padding: 20px 24px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.hero-icon {
+  width: 50px;
+  height: 50px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-text h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.hero-text p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.hero-badge {
+  background: rgba(255,255,255,0.15);
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+/* CARD */
+.eml-card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  border: 1px solid #e6edf5;
+}
+
+/* GRID */
+.eml-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.eml-field label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* INPUTS */
+.input,
+.field-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-size: 13px;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.input:focus,
+.field-select:focus {
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
+  outline: none;
+}
+
+/* ACTIONS */
+.eml-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.2s;
+}
+
+.btn.primary {
+  background: #1d4ed8;
+  color: white;
+}
+
+.btn.primary:hover {
+  background: #1e40af;
+}
+
+.btn.success {
+  background: #16a34a;
+  color: white;
+}
+
+.btn.success:hover {
+  background: #15803d;
+}
+
+.btn.outline {
+  background: white;
+  border: 1px solid #cbd5e1;
+}
+
+.btn.outline:hover {
+  background: #f1f5f9;
+}

@@ -1,0 +1,93 @@
+<!-- src/app/components/brouillon-envoi/brouillon-envoi.component.html -->
+<div class="brouillon-envoi">
+    <!-- Bouton d'envoi principal -->
+    <button type="button" 
+            class="btn btn-success btn-lg"
+            [class.btn-loading]="isEnvoiEnCours"
+            [disabled]="isEnvoiEnCours"
+            (click)="envoyerBrouillons()">
+        <i class="fas" [ngClass]="{
+            'fa-paper-plane': !isEnvoiEnCours,
+            'fa-spinner fa-spin': isEnvoiEnCours
+        }"></i>
+        {{ isEnvoiEnCours ? 'Envoi en cours...' : 'Envoyer les brouillons' }}
+    </button>
+
+    <!-- Résultat de l'envoi -->
+    <div *ngIf="resultat" class="mt-3 animate-fade-in">
+        <div class="alert" [ngClass]="{
+            'alert-success': resultat.success,
+            'alert-danger': !resultat.success,
+            'alert-info': !resultat.success && !resultat.success
+        }">
+            <div class="d-flex align-items-center">
+                <i class="fas {{ getResultIcon() }} fa-2x me-3"></i>
+                <div class="flex-grow-1">
+                    <strong>{{ resultat.success ? 'Envoi réussi !' : 'Échec de l\'envoi' }}</strong>
+                    <p class="mb-0 small">{{ resultat.message }}</p>
+                </div>
+                <button type="button" class="btn-close" (click)="reinitialiser()"></button>
+            </div>
+            
+            <!-- Statistiques -->
+            <div *ngIf="resultat.success && resultat.total > 0" class="row mt-3">
+                <div class="col-4 text-center">
+                    <div class="stat-value">{{ resultat.total }}</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="col-4 text-center">
+                    <div class="stat-value text-success">{{ resultat.envoyes }}</div>
+                    <div class="stat-label">Envoyés</div>
+                </div>
+                <div class="col-4 text-center">
+                    <div class="stat-value" [class.text-danger]="resultat.echecs > 0">
+                        {{ resultat.echecs }}
+                    </div>
+                    <div class="stat-label">Échecs</div>
+                </div>
+            </div>
+
+            <!-- Barre de progression -->
+            <div *ngIf="resultat.success && resultat.total > 0" class="mt-2">
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar bg-success" 
+                         role="progressbar" 
+                         [style.width]="(resultat.envoyes / resultat.total) * 100 + '%'">
+                        {{ resultat.envoyes }}
+                    </div>
+                    <div *ngIf="resultat.echecs > 0" 
+                         class="progress-bar bg-danger" 
+                         [style.width]="(resultat.echecs / resultat.total) * 100 + '%'">
+                        {{ resultat.echecs }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Détails des erreurs -->
+            <div *ngIf="resultat.erreurs && resultat.erreurs.length > 0" class="mt-3">
+                <a href="javascript:void(0)" (click)="showDetails = !showDetails" class="text-danger">
+                    <i class="fas" [ngClass]="{'fa-chevron-down': !showDetails, 'fa-chevron-up': showDetails}"></i>
+                    Détails des erreurs ({{ resultat.erreurs.length }})
+                </a>
+                <div *ngIf="showDetails" class="mt-2">
+                    <div *ngFor="let erreur of resultat.erreurs" class="small text-danger mb-1">
+                        <i class="fas fa-times-circle me-1"></i>
+                        {{ erreur.email }}: {{ erreur.raison }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console logs -->
+        <div class="card mt-3" *ngIf="logs.length > 0">
+            <div class="card-header bg-dark text-white py-1">
+                <small><i class="fas fa-terminal me-1"></i> Console</small>
+            </div>
+            <div class="card-body p-2" style="max-height: 200px; overflow-y: auto; background: #f4f4f4;">
+                <div *ngFor="let log of logs" class="log-line small">
+                    {{ log }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
