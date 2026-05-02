@@ -1,0 +1,124 @@
+<!-- src/app/components/configuration/configuration.component.html -->
+<div class="config-container">
+  <div class="config-card">
+    <!-- En-tête -->
+    <div class="card-header">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </div>
+      <h2>Configuration de l'expéditeur</h2>
+      <p>Personnalisez l'adresse email qui enverra les brouillons</p>
+    </div>
+
+    <!-- Corps -->
+    <div class="card-body">
+      <!-- Loading -->
+      <div *ngIf="isLoadingConfig" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement de la configuration...</p>
+      </div>
+
+      <!-- Contenu -->
+      <div *ngIf="!isLoadingConfig">
+        <!-- Email de l'utilisateur connecté -->
+        <div class="info-section">
+          <div class="info-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div class="info-content">
+            <label>Votre compte connecté</label>
+            <div class="info-value">{{ userEmail }}</div>
+            <small>Email utilisé par défaut pour les brouillons</small>
+          </div>
+        </div>
+
+        <!-- Option email personnalisé -->
+        <div class="custom-section">
+          <div class="custom-header">
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                [(ngModel)]="useCustomExpediteur" 
+                (change)="onUseCustomChange()"
+              />
+              <span>Utiliser un email expéditeur différent</span>
+            </label>
+            <small>Décochez pour revenir à l'email par défaut</small>
+          </div>
+
+          <!-- Champ email personnalisé -->
+          <div *ngIf="useCustomExpediteur" class="custom-input">
+            <label>Email expéditeur personnalisé</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <input 
+                type="email" 
+                [(ngModel)]="customExpediteurEmail" 
+                placeholder="exemple@domaine.com"
+                [disabled]="isLoading"
+                [class.error]="customExpediteurEmail && !isValidEmail(customExpediteurEmail)"
+              />
+            </div>
+            <small *ngIf="customExpediteurEmail && !isValidEmail(customExpediteurEmail)" class="error-text">
+              ⚠️ Format d'email invalide
+            </small>
+            <small *ngIf="!customExpediteurEmail || isValidEmail(customExpediteurEmail)" class="info-text">
+              💡 Le domaine de l'email (@gmail.com ou autre) détermine le client utilisé (Gmail ou Outlook)
+            </small>
+          </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="actions">
+          <button 
+            class="btn btn-primary" 
+            (click)="saveConfiguration()" 
+            [disabled]="isLoading || (useCustomExpediteur && !customExpediteurEmail)"
+          >
+            <span *ngIf="isLoading" class="spinner"></span>
+            <svg *ngIf="!isLoading" class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            {{ isLoading ? 'Enregistrement...' : 'Enregistrer la configuration' }}
+          </button>
+        </div>
+
+        <!-- Message de notification -->
+        <div *ngIf="showMessage" class="notification" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+          <span class="notification-icon">{{ messageType === 'success' ? '✓' : '✗' }}</span>
+          <span>{{ message }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pied de page -->
+    <div class="card-footer">
+      <div class="info-box">
+        <div class="info-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </div>
+        <div class="info-text">
+          <strong>Comment ça fonctionne ?</strong><br>
+          • <strong>Email par défaut</strong> : les brouillons sont créés dans votre compte de connexion<br>
+          • <strong>Email personnalisé</strong> : les brouillons sont créés dans le compte spécifié<br>
+          • Le domaine (@gmail.com, @outlook.com, etc.) détermine le client email utilisé
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+/* src/app/components/brouillon-envoi/brouillon-envoi.component.css */
+.btn-loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.log-line {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    padding: 2px 0;
+    border-bottom: 1px solid #e0e0e0;
+    color: #333;
+}
+
+.log-line:last-child {
+    border-bottom: none;
+}
+
+.progress {
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    line-height: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
